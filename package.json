@@ -1,0 +1,27 @@
+{
+  "name": "spendwise",
+  "version": "1.0.0",
+  "description": "Money Tracker App",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rlatksk/SpendWise.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rlatksk/SpendWise/issues"
+  },
+  "homepage": "https://github.com/rlatksk/SpendWise#readme",
+  "dependencies": {
+    "chart.js": "^4.4.2",
+    "ejs": "^3.1.9",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
+    "mongoose": "^8.2.3",
+    "nodemon": "^3.1.0"
+  }
+}
