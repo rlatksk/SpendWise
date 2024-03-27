@@ -2,9 +2,19 @@ const mongoose = require('mongoose')
 
 //Dummy db
 const userSchema = new mongoose.Schema({
-    info : {
-        name : String,
-        email : String
+    name : {
+        type : String,
+        required : true
+    },
+
+    email : {
+        type : String,
+        required : true
+    },
+
+    dateCreated : {
+        type : Date,
+        default : Date.now
     }
 })
 

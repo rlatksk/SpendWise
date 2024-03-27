@@ -33,14 +33,19 @@ app.listen(port, () => {
 function insertData () {
   dummySchema.insertMany([
     {
-      info : {
-        name : 'Justin Salim',
-        email: 'salim@yahoo.com'
-      }
+      name : 'Salim',
+      email : 'justin123@gmail.com',
     }
   ])
 }
-insertData()
+insertData() //function test
+
+function deleteData() {
+  dummySchema.deleteMany({ dateCreated: null })
+    .then(() => console.log('Data with null dateCreated deleted successfully'))
+    .catch((err) => console.error('Error deleting data:', err));
+}
+deleteData() //function test
 
 app.get('/db', async(req,res)=>{
   const userData = await dummySchema.find();
