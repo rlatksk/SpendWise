@@ -11,7 +11,7 @@ app.use(express.static('public'));
 dotenv.config()
 
 const port = process.env.PORT;
-const database = process.env.MONGO_URLdummy
+const database = process.env.MONGO_URIdummy
 
 mongoose.connect(database)
   .then(() => console.log(`Connected to Database ${database}`));
