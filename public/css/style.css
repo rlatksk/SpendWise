@@ -17,7 +17,7 @@ body {
   color: var(--black);
   font-size: var(--font-size-base);
   background-color: #FAF5EE;
-  background-image: url("/img/white-plain-concrete-textured-background.jpg");
+  background-image: url("/img/design-space-paper-textured-background.jpg");
   background-size: 100%;
   margin: 0;
 }
@@ -144,18 +144,18 @@ textarea {
   text-decoration: underline;
 }
 
-/* Author - HomePage */
-.author {
+/* Body - HomePage */
+.body {
   padding: 10px 0;
   text-align: center;
 }
 
-.author__heading {
+.heading {
   margin-top: 10px;
   margin-bottom: 5px;
 }
 
-.author__body {
+.body {
   font-size: var(--font-size-md);
   margin: 5px 0 40px 0;
 }
@@ -304,12 +304,7 @@ textarea {
 
 .pagination {
   font-size: 1.3rem;
-  color: var(--gray);
   text-decoration: none;
   margin-top: 40px;
   display: inline-block;
-}
-
-.pagination:hover {
-  color: var(--black);
 }
