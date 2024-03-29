@@ -1,10 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700&display=swap');
 
 :root {
-  --black: #1c1c1c;
+  --black: #222831;
   --gray: #7E7E7E;
   --gray-light: #E4E4E4;
   --red: #b30000;
+  --white: #EEEEEE;
+  --light-blue: #76ABAE;
+  --lighter-black: #31363F;
   --font-size-base: 1rem;
   --font-size-md: clamp(1.25rem, 0.61vw + 1.1rem, 1.58rem);
   --font-size-lg: clamp(1.56rem, 1vw + 1.31rem, 2.11rem);
@@ -307,4 +310,143 @@ textarea {
   text-decoration: none;
   margin-top: 40px;
   display: inline-block;
+}
+
+
+/* Transaction Page */
+.transactions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.transactions-header h1 {
+  font-size: calc(var(--font-size-xl) * 0.7)
+}
+
+.transactions-nav {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.transactions-nav li {
+  display: inline;
+  margin-right: 10px;
+}
+
+.transactions-nav li button {
+  font-family: 'Poppins', sans-serif;
+  color: var(--black);
+  font-weight: bold;
+  text-decoration: none;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.transactions-nav .select-date-range button {
+  color: white;
+  border-radius: 20px;
+  background-color: var(--lighter-black);
+  padding: 10px 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.transactions-stats {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 20px;
+  background-color: var(--white);
+  padding: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.total-transactions,
+.total-income,
+.total-expense {
+  flex: 1;
+  text-align: center;
+}
+
+.total-transactions p,
+.total-income p,
+.total-expense p {
+  margin: 0;
+  font-size: calc(var(--font-size-md) * 0.7);
+}
+
+.total-transactions h3,
+.total-income h3,
+.total-expense h3 {
+  margin: 0;
+  font-size: calc(var(--font-size-lg) * 0.7);
+}
+
+.transactions-list {
+  margin-top: 20px;
+  background-color: var(--white);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.transactions-list-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.transactions-list-header-left {
+  display: flex;
+  align-items: center;
+}
+
+.transactions-select-category {
+  margin-right: 20px;
+}
+
+.transactions-select-category,
+.search-btn,
+.download-btn {
+  font-family: 'Poppins', sans-serif;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--lighter-black);
+  color: white;
+}
+
+.transactions-select-category button {
+  background-color: #ffffff69;
+}
+
+.download-btn {
+  font-weight: bold;
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.transactions-table th,
+.transactions-table td {
+  padding: 10px;
+  text-align: left;
+  border-top: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+}
+
+.transactions-table th:first-child,
+.transactions-table td:first-child {
+  border-left: none;
+}
+
+.transactions-table th:last-child,
+.transactions-table td:last-child {
+  border-right: none;
 }

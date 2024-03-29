@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
-const dummyBetterTransactionSchema = new mongoose.Schema({
-    transactionId: {
-        type: String,
-        required: true,
-        unique: true
-    },
+const realTransactionSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true
@@ -19,9 +14,9 @@ const dummyBetterTransactionSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    name: {
+    notes: {
         type: String,
-        required: true
+        default: null
     },
     amount: {
         type: Number,
@@ -32,10 +27,6 @@ const dummyBetterTransactionSchema = new mongoose.Schema({
         default: Date.now,
         required: true
     },
-    notes: {
-        type: String,
-        default: null
-    }
 });
 
-module.exports = mongoose.model('DummyBetterTransaction', dummyBetterTransactionSchema);
+module.exports = mongoose.model('RealTransactions', realTransactionSchema);

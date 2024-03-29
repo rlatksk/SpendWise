@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const Transaction = require('../../db-schema/Transaction')
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
@@ -19,9 +20,10 @@ router.get("/", checkAuthenticated, (req, res) => {
   res.render("index", { title: "Home" });
 });
 
-router.get("/transactions", checkAuthenticated, (req, res) => {
-  res.render("transactions", { title: "Transactions" });
+router.get('/transactions', (req, res) => {
+    res.render('transactions', { title: 'Transactions' });
 });
+
 
 router.get("/login", checkNotAuthenticated, (req, res) => {
   res.render("login", { title: "Login" });
