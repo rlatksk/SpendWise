@@ -20,7 +20,7 @@ router.get("/", checkAuthenticated, (req, res) => {
   res.render("index", { title: "Home" });
 });
 
-router.get('/transactions', async (req, res) => {
+router.get('/transactions', checkAuthenticated, async (req, res) => {
   try {
       const transactions = await Transaction.find();
       res.render('transactions', { title: 'Transactions', transactions }); // Pass the transactions data to the view
@@ -30,13 +30,12 @@ router.get('/transactions', async (req, res) => {
   }
 });
 
-
 router.get("/login", checkNotAuthenticated, (req, res) => {
-  res.render("login", { title: "Login" });
+  res.render("login", { title: "Login", showHeader: false });
 });
 
 router.get("/register", checkNotAuthenticated, (req, res) => {
-  res.render("register.ejs", { title: "Register" });
+  res.render("register.ejs", { title: "Register", showHeader: false});
 });
 
 module.exports = router;

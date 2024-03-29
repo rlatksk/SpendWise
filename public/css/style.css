@@ -451,70 +451,83 @@ textarea {
   border-right: none;
 }
 
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f0f0f0;
-}
-
-form {
+.register__form {
   background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+  width: 400px;
+  margin: auto;
 }
 
-form div {
+.username__form,
+.email__form,
+.password__form {
   margin-bottom: 15px;
 }
 
-form label {
+.register__form label {
   display: block;
   margin-bottom: 5px;
 }
 
-form input[type="text"], form input[type="email"], form input[type="password"] {
+input[type="text"],
+input[type="email"],
+input[type="password"] {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-form .register__button {
+.register__button {
   width: 100%;
   padding: 10px;
-  background-color: #007BFF;
+  background-color: #112D4E;
   color: #ffffff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
-form .register__button:hover {
-  background-color: #0056b3;
+.register__button:hover {
+  background-color: #3F72AF;
 }
 
-form .login__button {
-  width: 100%;
-  padding: 10px;
-  background-color: #007BFF;
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+.register__form p {
+  text-align: center;
 }
 
-form .login__button:hover {
-  background-color: #0056b3;
-}
-
-form p {
-  text-align: left;
-}
-
-form a {
-  color: #007BFF;
+.register__form a {
+  color: #3F72AF;
   text-decoration: none;
+}
+
+.register__form a:hover {
+  text-decoration: underline;
+}
+
+.register__div h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logout__button {
+  background-color: #112D4E;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.logout__button:hover {
+  background-color: #3F72AF; 
+  color: white; 
 }

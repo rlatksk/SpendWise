@@ -9,15 +9,14 @@
     <script type="text/javascript" defer src="/js/script.js"></script>
 </head>
 <body>
-    <%- include('../partials/search.ejs')  %>
     <div class="container">
-        <%- include('../partials/header.ejs')  %>
+        <% if (typeof showHeader === 'undefined' || showHeader) { %>
+            <%- include('../partials/header.ejs')  %>
+        <% } %>
         <main class="main">
             <%- body  %>
         </main>
         <%- include('../partials/Footer.ejs')  %>
     </div>
-    
-
 </body>
 </html>

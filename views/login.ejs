@@ -1,21 +1,22 @@
-<h1>Login</h1>
-<% if (messages.error) {%>
-    <%= messages.error %>
-<% } %>
-<form
-  action="/login"
-  method="POST"
-  enctype="application/x-www-form-urlencoded"
->
+<% if (messages.error) {%> <%= messages.error %> <% } %>
+<div class="register__div">
+    <h1>Login</h1>
+  <form
+    class="register__form"
+    action="/login"
+    method="POST"
+    enctype="application/x-www-form-urlencoded"
+  >
     <div class="email__form">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required />
     </div>
     <div class="password__form">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required />
     </div>
-    <button type="submit" class="login__button">Login</button>
+    <button type="submit" class="register__button">Login</button>
     <p>Don't have an account?</p>
     <a href="/register">Register here!</a>
-</form>
+  </form>
+</div>
