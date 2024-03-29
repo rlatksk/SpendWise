@@ -20,8 +20,14 @@ router.get("/", checkAuthenticated, (req, res) => {
   res.render("index", { title: "Home" });
 });
 
-router.get('/transactions', (req, res) => {
-    res.render('transactions', { title: 'Transactions' });
+router.get('/transactions', async (req, res) => {
+  try {
+      const transactions = await Transaction.find();
+      res.render('transactions', { title: 'Transactions', transactions }); // Pass the transactions data to the view
+  } catch (error) {
+      console.error('Error fetching transactions:', error);
+      res.status(500).send('Internal Server Error');
+  }
 });
 
 
