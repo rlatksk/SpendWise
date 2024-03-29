@@ -10,6 +10,7 @@ const dotenv = require('dotenv')
 const dummySchema = require('./db-schema/dummySchema.js');
 // const dummyTransactionSchema = require('./db-schema/dummytransSchema.js');
 const realTransactionSchema = require('./db-schema/Transaction.js');
+const authRoutes = require('./server/routes/auth');
 
 app.use('/', authRoutes);
 app.use(express.json())
