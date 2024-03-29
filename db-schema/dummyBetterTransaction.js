@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const betterTransactionSchema = new mongoose.Schema({
+const dummyBetterTransactionSchema = new mongoose.Schema({
     transactionId: {
         type: String,
         required: true,
@@ -38,4 +38,4 @@ const betterTransactionSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('BetterTransaction', betterTransactionSchema);
+module.exports = mongoose.model('DummyBetterTransaction', dummyBetterTransactionSchema);
