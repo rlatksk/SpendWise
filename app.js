@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV !== 'production'){
+  require('dotenv').config();
+}
+
 const express = require('express')
 const expressLayout = require('express-ejs-layouts');
 const app = express()
@@ -5,7 +9,9 @@ const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const dummySchema = require('./db-schema/dummySchema.js');
 const dummyTransactionSchema = require('./db-schema/dummytransSchema.js');
+const authRoutes = require('./server/routes/auth');
 
+app.use('/', authRoutes);
 app.use(express.json())
 app.use(express.static('public'));
 
@@ -23,6 +29,7 @@ app.set('layout', './layouts/main');
 app.set('view engine', 'ejs');
 
 app.use('/', require('./server/routes/main'));
+app.use('/auth', require('./server/routes/auth'));
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`)
