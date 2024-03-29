@@ -10,11 +10,13 @@ const dotenv = require('dotenv')
 const dummySchema = require('./db-schema/dummySchema.js');
 // const dummyTransactionSchema = require('./db-schema/dummytransSchema.js');
 const realTransactionSchema = require('./db-schema/Transaction.js');
+const user = require('./db-schema/User.js');
 const authRoutes = require('./server/routes/auth');
 
 app.use('/', authRoutes);
-app.use(express.json())
 app.use(express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 dotenv.config()
 
@@ -250,5 +252,10 @@ app.get('/db/transactions', async(req,res)=>{
 
 app.get('/db/realTransactions', async(req,res)=>{
   const userData = await realTransactionSchema.find();
+  res.json(userData);
+})
+
+app.get('/db/user', async(req,res)=>{
+  const userData = await user.find();
   res.json(userData);
 })
