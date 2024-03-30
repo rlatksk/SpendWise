@@ -1,26 +1,105 @@
-<div class="body">
-    <h1 class="heading">test</h1>
-    <p class="body">hehe</p>
-</div>
+<% const transactionsJSON = JSON.stringify(transactions); %>
 
-<section class="transactions">
-    <h2 class="transactions__heading">
-        Latest Transactions
-    </h2>
-    <ul class="transactions-ul">
-        <li>
-            <a href="#">
-                <span>
-                    Transaction Title
-                </span>
-                <span class="transactions-list__date">
-                    Date
-                </span>
-            </a>
-        </li>
-    </ul>
-    <a href="transactions" class="pagination">
-        &lt; View Older Transactions
-    </a>
-</section>
+<canvas id="barChartIncome" data-transactions='<%- transactionsJSON %>'></canvas>
+<canvas id="barChartExpense" data-transactions='<%- transactionsJSON %>'></canvas>
 
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    // Retrieve the transaction data from the data attribute
+    const transactionsData = JSON.parse(document.getElementById('barChartIncome').dataset.transactions);
+
+    // Sort transactions in descending order based on date
+    transactionsData.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // Generate labels and data arrays for the past 30 days
+    const { labels, incomeData, expenseData } = generateChartData(transactionsData);
+
+    // Create Chart.js instance for income
+    var ctxIncome = document.getElementById('barChartIncome').getContext('2d');
+    var myChartIncome = new Chart(ctxIncome, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Income',
+                data: incomeData,
+                backgroundColor: 'rgba(75, 192, 192, 0.6)', // Aqua color
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    // Create Chart.js instance for expense
+    var ctxExpense = document.getElementById('barChartExpense').getContext('2d');
+    var myChartExpense = new Chart(ctxExpense, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Expense',
+                data: expenseData,
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    // Function to generate labels and data arrays for the past 30 days
+    function generateChartData(transactions) {
+        const labels = [];
+        const incomeData = [];
+        const expenseData = [];
+        const currentDate = new Date();
+        for (let i = 29; i >= 0; i--) {
+            const date = new Date(currentDate);
+            date.setDate(date.getDate() - i);
+            labels.push(formatDate(date));
+            const transactionsOnDate = transactions.filter(transaction => isSameDay(new Date(transaction.date), date));
+            if (transactionsOnDate.length > 0) {
+                incomeData.push(transactionsOnDate.filter(transaction => transaction.type === 'income').reduce((total, transaction) => total + transaction.amount, 0));
+                expenseData.push(transactionsOnDate.filter(transaction => transaction.type === 'expense').reduce((total, transaction) => total + transaction.amount, 0));
+            } else {
+                incomeData.push(0);
+                expenseData.push(0);
+            }
+        }
+        return { labels, incomeData, expenseData };
+    }
+
+    // Function to check if two dates are the same day
+    function isSameDay(date1, date2) {
+        return date1.getFullYear() === date2.getFullYear() &&
+            date1.getMonth() === date2.getMonth() &&
+            date1.getDate() === date2.getDate();
+    }
+
+    // Function to format date as "DD-MM"
+    function formatDate(date) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        return `${day}-${month}`;
+    }
+});
+</script>

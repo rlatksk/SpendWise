@@ -249,7 +249,8 @@ async function deleteTransactionsByUsername(username) {
 // insertTransaction('SophiaWilson', 'income', 'commission', 'Sales commission', 700, new Date());
 // insertTransaction('OliverTaylor', 'expense', 'dining', 'Dinner with friends', 50, new Date());
 // insertTransaction('ivander', 'income', 'salary', 'Monthly salary', 5000, new Date());
-deleteTransactionsByUsername('ivander');
+// insertTransaction('ivander', 'income', 'salary', 'Monthly salary', 5000, new Date());
+
 
 //Display stored data in db
 app.get('/db', async(req,res)=>{
@@ -257,10 +258,10 @@ app.get('/db', async(req,res)=>{
   res.json(userData);
 })
 
-app.get('/db/transactions', async(req,res)=>{
-  const userData = await dummyTransactionSchema.find();
-  res.json(userData);
-})
+// app.get('/db/transactions', async(req,res)=>{
+//   const userData = await dummyTransactionSchema.find();
+//   res.json(userData);
+// })
 
 app.get('/db/realTransactions', async(req,res)=>{
   const userData = await realTransactionSchema.find();
