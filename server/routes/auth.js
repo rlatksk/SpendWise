@@ -53,9 +53,14 @@ router.post('/login', function(req, res, next) {
 
 router.post("/register", checkNotAuthenticated, async (req, res) => {
   try {
-    const existingUser = await User.findOne({ email: req.body.email });
-    if(existingUser){
-      req.flash("error", "User already exists");
+    const existingUserEmail = await User.findOne({ email: req.body.email });
+    if(existingUserEmail){
+      req.flash("error", "Email already been used!");
+      return res.redirect("/register");
+    }
+    const existingUsername = await User.findOne({ username: req.body.username });
+    if(existingUsername){
+      req.flash("error", "Username already been used!");
       return res.redirect("/register");
     }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
