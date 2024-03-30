@@ -33,7 +33,7 @@ function checkNotAuthenticated(req, res, next) {
 
 initializePassport(
   passport,
-  (email) => User.findOne({ email: email }),
+  (username) => User.findOne({ username: username }),
   (id) => User.findOne({ id: id })
 );
 
