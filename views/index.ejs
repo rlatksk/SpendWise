@@ -1,7 +1,20 @@
 <% const transactionsJSON = JSON.stringify(transactions); %>
 
-<canvas id="barChartIncome" data-transactions='<%- transactionsJSON %>'></canvas>
-<canvas id="barChartExpense" data-transactions='<%- transactionsJSON %>'></canvas>
+
+<div class="home-header">
+    <h1>Welcome, <%=user.username%>!</h1>
+    <p>Here are your transaction statistics the past 30 days.</p>
+</div>
+
+<div class="bar-chart-container">
+    <div class="income-chart">
+        <h2>Income</h2>
+        <canvas id="barChartIncome" data-transactions='<%- transactionsJSON %>'></canvas>
+    <div class="expense-chart">
+        <h2>Expense</h2>
+        <canvas id="barChartExpense" data-transactions='<%- transactionsJSON %>'></canvas>
+    </div>
+</div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
