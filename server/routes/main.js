@@ -17,9 +17,17 @@ function checkNotAuthenticated(req, res, next) {
   next();
 }
 
-router.get("/", checkAuthenticated, (req, res) => {
-  res.render("index", { title: "Home" });
+router.get("/", checkAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findOne({ id: req.session.passport.user });
+    const transactions = await Transaction.find({ username: user.username });
+    res.render("index", { title: "Home", user, transactions }); // Pass both user and transactions data to the view
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
+
 
 router.get('/transactions', checkAuthenticated, async (req, res) => {
   try {
