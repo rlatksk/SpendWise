@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Transaction = require('../../db-schema/Transaction')
+const User = require("../../db-schema/User");
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
@@ -22,11 +23,13 @@ router.get("/", checkAuthenticated, (req, res) => {
 
 router.get('/transactions', checkAuthenticated, async (req, res) => {
   try {
-      const transactions = await Transaction.find();
-      res.render('transactions', { title: 'Transactions', transactions }); // Pass the transactions data to the view
+    const user = await User.find({ id: req.session.passport.user });
+    const transactions = await Transaction.find({ username: user[0].username });
+    // console.log(user, transactions);
+    res.render('transactions', { title: 'Transactions', transactions }); // Pass the transactions data to the view
   } catch (error) {
-      console.error('Error fetching transactions:', error);
-      res.status(500).send('Internal Server Error');
+    console.error('Error fetching transactions:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 
