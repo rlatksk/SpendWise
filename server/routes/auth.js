@@ -38,6 +38,7 @@ initializePassport(
 );
 
 router.post('/login', function(req, res, next) {
+  req.body.username = req.body.username.toLowerCase();
   passport.authenticate('local', function(err, user, info) {
     if (err) { return next(err); }
     if (!user) { 
@@ -53,6 +54,7 @@ router.post('/login', function(req, res, next) {
 
 router.post("/register", checkNotAuthenticated, async (req, res) => {
   try {
+    req.body.username = req.body.username.toLowerCase();
     const existingUserEmail = await User.findOne({ email: req.body.email });
     if(existingUserEmail){
       req.flash("error", "Email already been used!");
