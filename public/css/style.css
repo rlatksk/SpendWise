@@ -406,3 +406,7 @@ input[type="password"] {
   background-color: #3F72AF; 
   color: white; 
 }
+
+.footer {
+  margin: 30px 0;
+}

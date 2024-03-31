@@ -40,6 +40,7 @@ app.listen(port, () => {
 
 //CRUD FUNCTIONS for user schema
 function insertUserData (usernameValue, emailValue) {
+  usernameValue = usernameValue.toLowerCase();
   if(usernameValue != null && emailValue != null){
     dummySchema.insertOne(
       {
@@ -53,6 +54,7 @@ function insertUserData (usernameValue, emailValue) {
 }
 
 function deleteUserData(usernameValue) {
+  usernameValue = usernameValue.toLowerCase();
   if(usernameValue != null){
     dummySchema.deleteMany({ username: usernameValue })
     .then(() => console.log(`User data with username(${usernameValue.toString()}) deleted successfully`))
@@ -63,6 +65,7 @@ function deleteUserData(usernameValue) {
 }
 
 function updateUserEmail(usernameValue, oldEmailValue, emailValue){
+  usernameValue = usernameValue.toLowerCase();
   if(usernameValue != null && oldEmailValue != null && emailValue != null){
     dummySchema.updateOne(
       { //old email verification
@@ -140,7 +143,7 @@ function updateUserEmail(usernameValue, oldEmailValue, emailValue){
 async function insertTransaction(username, type, category, notes, amount, date) {
     try {
         const transaction = new realTransactionSchema({
-            username,
+            username: username.toLowerCase(),
             type,
             category,
             notes,
@@ -227,8 +230,9 @@ async function deleteTransaction(transactionId) {
 }
 
 // Function to delete all transactions belonging to a certain username
-async function deleteTransactionsByUsername(username) {
+async function deleteTransactionsByUsername(usernameValue) {
   try {
+    usernameValue = usernameValue.toLowerCase();
       await realTransactionSchema.deleteMany({ username: username });
       console.log(`Transactions belonging to username ${username} deleted successfully.`);
   } catch (error) {
@@ -239,7 +243,7 @@ async function deleteTransactionsByUsername(username) {
 
 // // Testing the fucking new crud shit bullshit 
 // insertTransaction('JohnDoe', 'income', 'salary', 'Monthly salary', 5000, new Date());
-// insertTransaction('JaneDoe', 'expense', 'groceries', 'Weekly grocery shopping', 200, new Date());
+// insertTransaction('RLATKSK', 'expense', 'groceries', 'Weekly grocery shopping', 200, new Date());
 // insertTransaction('AliceSmith', 'income', 'freelance', 'Freelance work payment', 1000, new Date());
 // insertTransaction('BobJohnson', 'expense', 'rent', 'Monthly rent payment', 1500, new Date());
 // insertTransaction('EvaMiller', 'income', 'investment', 'Dividend income', 300, new Date());
