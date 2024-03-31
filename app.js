@@ -216,6 +216,16 @@ async function updateTransactionDate(transactionId, newDate) {
     }
 }
 
+// Function to update a transaction note based on the transaction id
+async function updateTransactionNote(transactionId, newNote) {
+  try {
+      await realTransactionSchema.findByIdAndUpdate(transactionId, { notes: newNote });
+      console.log("Transaction date updated successfully.");
+  } catch (error) {
+      console.error("Error updating transaction date:", error);
+  }
+}
+
 // Function to delete a transaction based on the transaction id
 async function deleteTransaction(transactionId) {
     try {
@@ -249,7 +259,9 @@ async function deleteTransactionsByUsername(username) {
 // insertTransaction('SophiaWilson', 'income', 'commission', 'Sales commission', 700, new Date());
 // insertTransaction('OliverTaylor', 'expense', 'dining', 'Dinner with friends', 50, new Date());
 // insertTransaction('ivander', 'income', 'salary', 'Monthly salary', 5000, new Date());
-// insertTransaction('ivander', 'income', 'salary', 'Monthly salary', 5000, new Date());
+
+// insertTransaction('ivander', 'income', 'salary', 'Monthly salary', 7500, new Date());
+// insertTransaction('ivander', 'expense', 'food', 'Monthly food', 5000, new Date());
 
 
 //Display stored data in db

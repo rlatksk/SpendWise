@@ -18,6 +18,7 @@
   --border-radius: 10px;
 }
 
+
 body {
   font-family: 'Poppins', sans-serif;
   color: var(--black);
@@ -167,19 +168,97 @@ textarea {
 }
 
 .home-header {
-  padding: 10px;
+  padding: 30px;
   border-radius: 20px;
-  background-color: var(--darker-blue);
-  color: var(--white);
+  background-color: var(--white);
+  color: var(--black);
+  margin-bottom: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-around;
+  gap: 100px;
+  align-items: center;
+}
+
+
+.home-header-left h3 {
+  color: #22283197;
+  margin: 0;
+}
+
+.home-header-left h1 {
+  font-size: calc(var(--font-size-xl) * 0.7);
+  margin: 0;
+}
+
+.home-header-statistics{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 100px;
+}
+
+.home-header-right {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 50px;
+  gap: 40px;
+}
+
+.home-header-add-transaction a{
+  text-decoration: none;
+  color: white;
+  background-color: var(--darker-blue);
+  padding: 10px 20px;
+  border-radius: 20px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.home-header p {
-  margin-top: 0px;
+.home-header-wallet,
+.home-header-income,
+.home-header-expense {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.home-header-wallet h3,
+.home-header-income h3,
+.home-header-expense h3 {
+  margin: 0;
+  font-size: calc(var(--font-size-md) * 1.2);
+}
+
+.home-header-wallet p,
+.home-header-income p,
+.home-header-expense p {
+  margin: 0;
+  font-size: calc(var(--font-size-md) * 0.7);
+}
+
+.transaction-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 0;
+  margin-bottom: 50px;
+}
+
+.add-transaction-btn {
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;;
+  background-color: var(--black);
+  color: var(--white);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-transaction-btn:hover {
+  background-color: var(--darker-blue);
 }
 
 .bar-chart-container {
@@ -187,6 +266,26 @@ textarea {
   flex-direction: column;
 }
 
+.income-chart,
+.expense-chart {
+  background-color: var(--white);
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.expense-chart {
+  margin-top: 100px;
+}
+
+.income-chart-header,
+.expense-chart-header {
+  background-color: var(--black);
+  color: var(--white);
+  padding: 5px;
+  padding-left: 30px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
 
 /* Transaction Page */
 .transactions-header {

@@ -2,16 +2,57 @@
 
 
 <div class="home-header">
-    <h1>Welcome, <%=user.username%>!</h1>
-    <p>Here are your transaction statistics the past 30 days.</p>
+    <div class="home-header-left">
+        <h3>Welcome Back, </h3>
+        <h1><%=user.username%>!</h1>
+    </div>
+    <div class="home-header-right">
+        <!-- Used to have another div here so that's why this one has a child -->
+        <div class="home-header-statistics">
+            <% let totalIncome = 0; %>
+            <% let totalExpense = 0; %>
+            <% transactions.forEach(transaction => { %>
+                <%
+                const transactionDate = new Date(transaction.date);
+                const today = new Date();
+                if (
+                    transactionDate.getDate() === today.getDate() &&
+                    transactionDate.getMonth() === today.getMonth() &&
+                    transactionDate.getFullYear() === today.getFullYear()
+                ) { %>
+                    <% if (transaction.type === 'income') { %>
+                        <% totalIncome += transaction.amount; %>
+                    <% } else { %>
+                        <% totalExpense += transaction.amount; %>
+                    <% } %>
+                <% } %>
+            <% }); %>
+            <div class="home-header-income">
+                <p>Today's Income</p>
+                <h3>$<%= totalIncome.toFixed(2) %></h3>
+            </div>
+            <div class="home-header-expense">
+                <p>Today's Expense</p>
+                <h3>$<%= totalExpense.toFixed(2) %></h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="transaction-btn-container">
+    <button class="add-transaction-btn">ADD TRANSACTION</button>
 </div>
 
 <div class="bar-chart-container">
     <div class="income-chart">
-        <h2>Income</h2>
+        <div class="income-chart-header">
+            <h2>Income Past 30 Days</h2>
+        </div>
         <canvas id="barChartIncome" data-transactions='<%- transactionsJSON %>'></canvas>
     <div class="expense-chart">
-        <h2>Expense</h2>
+        <div class="expense-chart-header">
+            <h2>Expense Past 30 Days</h2>
+        </div>
         <canvas id="barChartExpense" data-transactions='<%- transactionsJSON %>'></canvas>
     </div>
 </div>
