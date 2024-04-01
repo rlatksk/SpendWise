@@ -468,13 +468,22 @@ input[type="password"] {
   background-color: #3F72AF;
 }
 
+.register__form__links{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
 .register__form p {
   text-align: center;
+  margin-top : 20px;
+  margin-bottom: 0;
 }
 
 .register__form a {
   color: #3F72AF;
   text-decoration: none;
+  margin: 0;
 }
 
 .register__form a:hover {
@@ -484,6 +493,12 @@ input[type="password"] {
 .register__div h1 {
   text-align: center;
   margin-bottom: 20px;
+}
+
+.login__form__links {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
 }
 
 .logout__button {
