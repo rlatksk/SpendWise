@@ -1,6 +1,6 @@
 <div align="center">
 
-![SpendWise Logo](https://i.ibb.co/BrWS8j5/spendwise-logo.png)
+![SpendWise Logo](public/img/logo-no-background.svg)
 
 # SpendWise
 
