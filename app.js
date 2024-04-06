@@ -81,63 +81,6 @@ function updateUserEmail(usernameValue, oldEmailValue, emailValue){
   }
 }
 
-// //CRUD Functions for transactions schema
-// function insertData (incomeValue, expenseValue, notesValue) {
-//   if(incomeValue != null || expenseValue != null){
-//     dummyTransactionSchema.insertMany(
-//       { 
-//         income : incomeValue,
-//         expense : expenseValue,
-//         notes : notesValue
-//       }
-//     )
-//   } else {
-//     console.log("Income or Expense is null")
-//   }
-// }
-
-// function deleteData(identifierNum) {
-//   if(identifierNum != null){
-//     dummyTransactionSchema.deleteOne({ _id: identifierNum })
-//     .then(() => console.log(`User data with username(${identifierNum.toString()}) deleted successfully`))
-//     .catch((err) => console.error('Error deleting data:', err));
-//     } else {
-//       console.error("Identifier number is null");
-//     }
-//   } 
-
-//   function updateExpenseData(identifierNum, newValue){
-//     if(identifierNum != null && newValue != null){
-//       dummyTransactionSchema.findOneAndUpdate({ _id : identifierNum}, {expense : newValue})
-//         .then(() => console.log(`Expense history for transaction id(${identifierNum}) has been updated to ${newValue}`))
-//         .catch((err) => console.error('Error updating data:', err));
-//     } else {
-//       console.error('Cannot find transaction');
-//     }
-//   }
-
-//   function updateIncomeData(identifierNum, newValue){
-//     if(identifierNum != null && newValue != null){
-//       dummyTransactionSchema.findOneAndUpdate({ _id : identifierNum}, {income : newValue})
-//         .then(() => console.log(`Income history for transaction id(${identifierNum}) has been updated to ${newValue}`))
-//         .catch((err) => console.error('Error updating data:', err));
-//     } else {
-//       console.error('Cannot find transaction');
-//     }
-//   }
-
-// function test
-// insertUserData("WY", "wy@gmail.com") //function test
-// insertUserData("fakeuser123", "fake@email.com")
-// deleteUserData("fakeuser123")
-// updateUserEmail("WY", "wy@gmail.com", null)
-
-// insertData(500000, null, null)
-// deleteData('6603ff1f18088ae73833811a')
-// updateExpenseData('6603fdd7b991cf8c25c16ff8', 20000)
-// updateIncomeData('6603fe22a6ff5b2ffd4f8c35', 20000)
-
-
 // CRUD FUNCTIONS TO BE USED FOR REAL TRANSACTIONS
 // Function to insert a transaction
 async function insertTransaction(username, type, category, notes, amount, date) {
@@ -153,7 +96,7 @@ async function insertTransaction(username, type, category, notes, amount, date) 
         await transaction.save();
         console.log("Transaction inserted successfully.");
     } catch (error) {
-        console.error("Error inserting transaction:", error);
+        console.error("Error inserting transaction:", error); 
     }
 }
 
@@ -264,8 +207,8 @@ async function deleteTransactionsByUsername(usernameValue) {
 // insertTransaction('OliverTaylor', 'expense', 'dining', 'Dinner with friends', 50, new Date());
 // insertTransaction('ivander', 'income', 'salary', 'Monthly salary', 5000, new Date());
 
-insertTransaction('ivander', 'income', 'salary', 'Monthly salary', 7500, new Date());
-insertTransaction('ivander', 'expense', 'food', 'Monthly food', 5000, new Date());
+// insertTransaction('ivander', 'income', 'salary', 'Monthly salary', 7500, new Date());
+// insertTransaction('ivander', 'expense', 'food', 'Monthly food', 5000, new Date());
 
 
 //Display stored data in db
@@ -288,3 +231,16 @@ app.get('/db/user', async(req,res)=>{
   const userData = await user.find();
   res.json(userData);
 })
+
+  module.exports = {
+    insertTransaction,
+    getTransactionById,
+    getAllTransactions,
+    updateTransactionAmount,
+    updateTransactionCategory,
+    updateTransactionType,
+    updateTransactionDate,
+    updateTransactionNote,
+    deleteTransaction,
+    deleteTransactionsByUsername
+  }
