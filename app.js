@@ -264,8 +264,8 @@ async function deleteTransactionsByUsername(usernameValue) {
 // insertTransaction('OliverTaylor', 'expense', 'dining', 'Dinner with friends', 50, new Date());
 // insertTransaction('ivander', 'income', 'salary', 'Monthly salary', 5000, new Date());
 
-insertTransaction('ivander', 'income', 'salary', 'Monthly salary', 7500, new Date());
-insertTransaction('ivander', 'expense', 'food', 'Monthly food', 5000, new Date());
+// insertTransaction('ivander', 'income', 'salary', 'Monthly salary', 7500, new Date());
+// insertTransaction('ivander', 'expense', 'food', 'Monthly food', 5000, new Date());
 
 
 //Display stored data in db

@@ -1,3 +1,4 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <div class="transactions-header">
     <h1>Transactions</h1>
     <nav>
@@ -42,7 +43,8 @@
         </div>
         <div>
             <button class="download-btn">DOWNLOAD</button>
-            <button class="addTransactions-btn">+ Transaction</button>
+            <button onclick="addIncome()" class="addTransactions-btn">+ Income</button>
+            <button onclick="addExpense()" class="addTransactions-btn">+ Expense</button>
         </div>
     </div>
     <table class="transactions-table">
