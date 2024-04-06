@@ -383,12 +383,33 @@ textarea {
 
 .transactions-select-category,
 .search-btn,
-.download-btn,
-.addTransactions-btn {
+.download-btn{
   font-family: 'Poppins', sans-serif;
   border: none;
   padding: 10px 20px;
   border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--lighter-black);
+  color: white;
+}
+
+.addIncome-btn{
+  font-family: 'Poppins', sans-serif;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px 0 0 20px;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--lighter-black);
+  color: white;
+}
+
+.addExpense-btn{
+  font-family: 'Poppins', sans-serif;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 0px 20px 20px 0px;
   cursor: pointer;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   background-color: var(--lighter-black);
