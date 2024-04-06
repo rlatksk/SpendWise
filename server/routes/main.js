@@ -49,4 +49,8 @@ router.get("/register", checkNotAuthenticated, (req, res) => {
   res.render("register.ejs", { title: "Register", showHeader: false});
 });
 
+router.get("/verify", (req, res) => {
+  res.render("verify", { title: "Verify", showHeader: false });
+});
+
 module.exports = router;

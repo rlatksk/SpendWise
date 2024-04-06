@@ -5,6 +5,7 @@ const session = require("express-session");
 const passport = require("passport");
 const methodOverride = require("method-override");
 const bcrypt = require("bcrypt");
+const nodemailer = require('nodemailer');
 
 const User = require("../../db-schema/User.js");
 
@@ -36,6 +37,34 @@ initializePassport(
   (username) => User.findOne({ username: username }),
   (id) => User.findOne({ id: id })
 );
+
+async function sendVerificationEmail(email, username) {
+  const verificationCode = Math.floor(100000 + Math.random() * 900000);
+
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  let mailOptions = {
+    from: process.env.EMAIL_USERNAME,
+    to: email,
+    subject: 'Email Verification Code',
+    text: `Hello ${username}, your email verification code is ${verificationCode}.`,
+  };
+
+  try {
+    let info = await transporter.sendMail(mailOptions);
+    console.log('Message sent: %s', info.messageId);
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
+
+  return verificationCode;
+}
 
 router.post('/login', function(req, res, next) {
   req.body.username = req.body.username.toLowerCase();
@@ -71,12 +100,39 @@ router.post("/register", checkNotAuthenticated, async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
+      verificationCode: await sendVerificationEmail(req.body.email, req.body.username),
     });
     await user.save();
-    res.redirect("/login");
+
+    req.session.email = req.body.email;
+
+    res.redirect("/verify");
   } catch (err) {
     console.log(err);
     res.redirect("/register");
+  }
+});
+
+router.post("/verify", async (req, res) => {
+  const { code } = req.body;
+
+  const email = req.session.email;
+
+  const user = await User.findOne({ email });
+
+  if(!user){
+    req.flash("error", "User not found!");
+    return res.redirect("/verify");
+  }
+
+  if(code === user.verificationCode) {
+    user.verified = true;
+    await user.save();
+    delete req.session.email;
+    req.flash({'success': 'Email verified!'});
+    res.redirect("/login");
+  } else {
+    res.status(400).json({ message: "Invalid verification code!" });
   }
 });
 
