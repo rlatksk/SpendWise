@@ -383,7 +383,8 @@ textarea {
 
 .transactions-select-category,
 .search-btn,
-.download-btn {
+.download-btn,
+.addTransactions-btn {
   font-family: 'Poppins', sans-serif;
   border: none;
   padding: 10px 20px;
