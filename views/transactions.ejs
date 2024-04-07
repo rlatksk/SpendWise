@@ -59,7 +59,7 @@
         </thead>
         <tbody>
             <% transactions.forEach(transaction => { %>
-                <tr>
+                <tr data-transaction-id="<%= transaction._id %>">
                     <td><%= transaction.date.toISOString().slice(0, 10) %></td>
                     <% if (transaction.type === 'expense') { %>
                         <td>-$<%= Math.abs(transaction.amount).toFixed(2) %></td>
@@ -68,7 +68,7 @@
                     <% } %>
                     <td><%= transaction.category %></td>
                     <td><%= transaction.notes %></td>
-                    <td id="editor"><a>Edit</a> <a>Delete</a></td>
+                    <td id="editor"><a>Edit</a> <a onclick="deleteTransaction('<%= transaction._id %>')">Delete</a></td>
                 </tr>
             <% }); %>
         </tbody>
