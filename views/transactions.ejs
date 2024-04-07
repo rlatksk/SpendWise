@@ -54,6 +54,7 @@
                 <th>Amount</th>
                 <th>Category</th>
                 <th>Notes</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -67,6 +68,7 @@
                     <% } %>
                     <td><%= transaction.category %></td>
                     <td><%= transaction.notes %></td>
+                    <td id="editor"><a>Edit</a> <a>Delete</a></td>
                 </tr>
             <% }); %>
         </tbody>
