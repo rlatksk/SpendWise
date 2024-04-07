@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Transaction = require('../../db-schema/Transaction')
 const User = require("../../db-schema/User");
-const { insertTransaction } = require('../../app');
+const { insertTransaction } = require('../../functions/transactionsFunction');
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
