@@ -41,11 +41,12 @@ function addIncome() {
                 Swal.fire({
                     title: "Income Added",
                     icon: "success",
-                    showConfirmButton: false
+                    showConfirmButton: false,
+                    allowOutsideClick: false
                   });
                 setTimeout(() => {
                     location.reload();
-                }, 2000);
+                }, 1500);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -98,11 +99,12 @@ function addExpense() {
                 Swal.fire({
                     title: "Expense Added",
                     icon: "success",
-                    showConfirmButton: false
+                    showConfirmButton: false,
+                    allowOutsideClick: false
                   });
                 setTimeout(() => {
                     location.reload();
-                }, 2000);
+                }, 1500);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -146,11 +148,12 @@ function deleteTransaction(transactionId) {
           Swal.fire({
             title: "Transaction Deleted",
             icon: "success",
-            showConfirmButton: false
+            showConfirmButton: false,
+            allowOutsideClick: false
           });
           setTimeout(() => {
             location.reload();
-          }, 2000);
+          }, 1500);
         } else {
           console.log('Result:', result);
         }

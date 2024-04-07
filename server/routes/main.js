@@ -57,7 +57,7 @@ router.post('/api/insertTransaction', checkAuthenticated, async (req, res) => {
   }
 });
 
-router.delete('/api/deletetransaction/:transactionId', async (req, res) => {
+router.delete('/api/deletetransaction/:transactionId', checkAuthenticated, async (req, res) => {
   try {
     const transactionId = req.params.transactionId;
     await deleteTransaction(transactionId);
