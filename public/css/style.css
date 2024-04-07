@@ -554,5 +554,13 @@ input[type="password"] {
 }
 
 .footer {
-  margin: 30px 0;
+  margin: 4rem;
+  text-align: center;
+}
+
+.full-height {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 78vh;
 }
