@@ -38,9 +38,7 @@ initializePassport(
   (id) => User.findOne({ id: id })
 );
 
-async function sendVerificationEmail(email, username) {
-  const verificationCode = Math.floor(100000 + Math.random() * 900000);
-
+async function sendVerificationEmail(email, username, verificationCode) {
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -68,16 +66,31 @@ async function sendVerificationEmail(email, username) {
 
 router.post('/login', function(req, res, next) {
   req.body.username = req.body.username.toLowerCase();
-  passport.authenticate('local', function(err, user, info) {
+  passport.authenticate('local', async function(err, user, info) {
     if (err) { return next(err); }
     if (!user) { 
       req.flash('error', info.message);
       return res.redirect('/login'); 
     }
-    req.logIn(user, function(err) {
-      if (err) { return next(err); }
-      return res.redirect('/');
-    });
+    if(!user.verified){
+      try {
+        const verificationCode = Math.floor(100000 + Math.random() * 900000);
+        user = await User.findById(user._id);
+        await User.updateOne({ _id: user._id }, { verificationCode: verificationCode });
+
+        sendVerificationEmail(user.email, user.username, verificationCode);
+        req.flash('error', 'Your account is not verified. We have sent you a new verification code.');
+        req.session.email = user.email;
+        return res.redirect('/verify');
+      } catch (err) {
+        return next(err);
+      }
+    } else {
+      req.logIn(user, function(err) {
+        if (err) { return next(err); }
+        return res.redirect('/');
+      });
+    }
   })(req, res, next);
 });
 
@@ -95,12 +108,13 @@ router.post("/register", checkNotAuthenticated, async (req, res) => {
       return res.redirect("/register");
     }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const verificationCode = Math.floor(100000 + Math.random() * 900000);
     const user = new User({
       id: Date.now().toString(),
       username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
-      verificationCode: await sendVerificationEmail(req.body.email, req.body.username),
+      verificationCode: await sendVerificationEmail(req.body.email, req.body.username, verificationCode),
     });
     await user.save();
 
@@ -125,14 +139,17 @@ router.post("/verify", async (req, res) => {
     return res.redirect("/verify");
   }
 
+  if(code !== user.verificationCode){
+    req.flash("error", "Invalid verification code!");
+    return res.redirect("/verify");
+  }
+
   if(code === user.verificationCode) {
     user.verified = true;
     await user.save();
     delete req.session.email;
     req.flash({'success': 'Email verified!'});
     res.redirect("/login");
-  } else {
-    res.status(400).json({ message: "Invalid verification code!" });
   }
 });
 

@@ -1,50 +1,52 @@
-<div
-  style="
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  "
->
-  <% if (messages.error) {%>
+<div class="full-height">
   <div
     style="
-      position: absolute;
-      top: 0;
-      width: 100%;
-      text-align: center;
-      background-color: #f8d7da;
-      color: #721c24;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     "
   >
-    <%= messages.error %>
-  </div>
-  <% } %>
-  <div class="register__div">
-    <h1>Register</h1>
-    <form
-      class="register__form"
-      action="/register"
-      method="POST"
-      enctype="application/x-www-form-urlencoded"
+    <% if (messages.error) {%>
+    <div
+      style="
+        position: absolute;
+        top: 0;
+        width: 100%;
+        text-align: center;
+        background-color: #f8d7da;
+        color: #721c24;
+      "
     >
-      <div class="username__form">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" required />
-      </div>
-      <div class="email__form">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required />
-      </div>
-      <div class="password__form">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required />
-      </div>
-      <button type="submit" class="register__button">Register</button>
-      <div class="register__form__links">
-        <p>Already have an account?</p>
-        <a href="/login">Login here!</a>
-      </div>
-    </form>
+      <%= messages.error %>
+    </div>
+    <% } %>
+    <div class="register__div">
+      <h1>Register</h1>
+      <form
+        class="register__form"
+        action="/register"
+        method="POST"
+        enctype="application/x-www-form-urlencoded"
+      >
+        <div class="username__form">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+        <div class="email__form">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="password__form">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <button type="submit" class="register__button">Register</button>
+        <div class="register__form__links">
+          <p>Already have an account?</p>
+          <a href="/login">Login here!</a>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
