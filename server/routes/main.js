@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Transaction = require('../../db-schema/Transaction')
 const User = require("../../db-schema/User");
-const { insertTransaction } = require('../../functions/transactionsFunction');
+const { insertTransaction, deleteTransaction } = require('../../functions/transactionsFunction');
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
@@ -43,7 +43,6 @@ router.get('/transactions', checkAuthenticated, async (req, res) => {
 });
 
 router.post('/api/insertTransaction', checkAuthenticated, async (req, res) => {
-  // Call the insertTransaction function
   try {
     const user = await User.findOne({ id: req.session.passport.user });
     const { type, category, notes, amount } = req.body;
@@ -55,6 +54,17 @@ router.post('/api/insertTransaction', checkAuthenticated, async (req, res) => {
   } catch (err) {
     console.log('Error:', err);
     res.status(500).json({ error: 'Error inserting transaction' });
+  }
+});
+
+router.delete('/api/deletetransaction/:transactionId', async (req, res) => {
+  try {
+    const transactionId = req.params.transactionId;
+    await deleteTransaction(transactionId);
+    res.status(200).json({ message: 'Transaction deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting transaction:', error);
+    res.status(500).json({ error: 'Failed to delete transaction' });
   }
 });
 

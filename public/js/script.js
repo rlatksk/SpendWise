@@ -38,7 +38,11 @@ function addIncome() {
             })
             .then(data => {
                 console.log(data); 
-                Swal.fire("Income Added", "", "success");
+                Swal.fire({
+                    title: "Income Added",
+                    icon: "success",
+                    showConfirmButton: false
+                  });
                 setTimeout(() => {
                     location.reload();
                 }, 2000);
@@ -91,7 +95,11 @@ function addExpense() {
             })
             .then(data => {
                 console.log(data); 
-                Swal.fire("Expense Added", "", "success");
+                Swal.fire({
+                    title: "Expense Added",
+                    icon: "success",
+                    showConfirmButton: false
+                  });
                 setTimeout(() => {
                     location.reload();
                 }, 2000);
@@ -102,4 +110,53 @@ function addExpense() {
             });
         }
     })
+}
+
+function deleteTransaction(transactionId) {
+    Swal.fire({
+        title: "Delete Transaction?",
+        text: "This cannot be undone",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+        preConfirm: async () => {
+            try {
+              const response = await fetch(`/api/deletetransaction/${transactionId}`, {
+                method: 'DELETE'
+              });
+              const data = await response.json();
+              if (response.ok) {
+                return { success: true };
+              } else if (response.status === 404) {
+                // Handle the 404 case here
+                return { success: true, message: 'Transaction not found, but deleted from the database' };
+              } else {
+                throw new Error(data.message || 'Failed to delete transaction');
+              }
+            } catch (error) {
+              return { success: false, error: error.message };
+            }
+        }
+    })
+    .then(result => {
+        console.log('Result value:', result.value);
+        if (result.value.success) {
+          Swal.fire({
+            title: "Transaction Deleted",
+            icon: "success",
+            showConfirmButton: false
+          });
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+        } else {
+          console.log('Result:', result);
+        }
+      })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire("Error", "Failed to delete transaction", "error");
+    });
 }
