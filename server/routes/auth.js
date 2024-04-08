@@ -107,6 +107,10 @@ router.post("/register", checkNotAuthenticated, async (req, res) => {
       req.flash("error", "Username already been used!");
       return res.redirect("/register");
     }
+    if(req.body.password !== req.body.confirmPassword){
+      req.flash("error", "Passwords do not match!");
+      return res.redirect("/register");
+    }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const verificationCode = Math.floor(100000 + Math.random() * 900000);
     const user = new User({
