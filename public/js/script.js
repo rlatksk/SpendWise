@@ -211,6 +211,8 @@ function editTransaction(transactionId) {
             </select>
             <label for="swal-input4">Note</label>
             <input id="swal-input4" class="swal2-input" placeholder="Note">
+            <label for="swal-input5">Date</label>
+            <input id="swal-input5" type="date" class="swal2-input" placeholder="Date">
         </div>
         `,
       showCancelButton: true,
@@ -220,6 +222,7 @@ function editTransaction(transactionId) {
         const category = document.getElementById("swal-input2").value;
         const type = document.getElementById("swal-input3").value;
         const note = document.getElementById("swal-input4").value;
+        const date = document.getElementById("swal-input5").value;
 
         if (!amount || !category) {
             Swal.showValidationMessage('Amount and Category fields cannot be empty');
@@ -240,6 +243,9 @@ function editTransaction(transactionId) {
         if (note) {
           updateData.note = note;
         }
+        if (date) {
+          updateData.date = date;
+      }
   
         try {
           const response = await fetch(`/api/edittransactions/${transactionId}`, {

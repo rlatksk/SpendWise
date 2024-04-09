@@ -71,10 +71,10 @@ router.delete('/api/deletetransaction/:transactionId', checkAuthenticated, async
 router.put('/api/edittransactions/:transactionId', checkAuthenticated, async (req, res) => {
   try {
     const transactionId = req.params.transactionId;
-    const { amount, category, type, date, note } = req.body;
+    const { amount, category, type, note, date } = req.body;
 
     if (amount) {
-      await updateTransactionAmount(transactionId, parseFloat(amount));
+      await updateTransactionAmount(transactionId, amount);
     }
     if (category) {
       await updateTransactionCategory(transactionId, category);
@@ -85,6 +85,10 @@ router.put('/api/edittransactions/:transactionId', checkAuthenticated, async (re
     
     if (note) {
       await updateTransactionNote(transactionId, note);
+    }
+
+    if (date) {
+      await updateTransactionDate(transactionId, date);
     }
 
     res.status(200).json({ message: 'Transaction updated successfully' });
