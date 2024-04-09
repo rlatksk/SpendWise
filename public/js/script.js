@@ -3,7 +3,7 @@ function addIncome() {
         title: "Add Income",
         html:
         '<label for="swal-input1">Income</label>' +
-        '<input id="swal-input1" type="number" class="swal2-input" placeholder="Income">' +
+        '<input id="swal-input1" type="number" class="swal2-input" placeholder="Amount">' +
         '<label for="swal-input2">Category</label>' +
         '<input id="swal-input2" class="swal2-input" placeholder="Category">' +
         '<label for="swal-input3">Notes </label>' +
@@ -61,7 +61,7 @@ function addExpense() {
         title: "Add Expense",
         html:
         '<label for="swal-input1">Expense</label>' +
-        '<input id="swal-input1" type="number" class="swal2-input" placeholder="Expense">' +
+        '<input id="swal-input1" type="number" class="swal2-input" placeholder="Amount">' +
         '<label for="swal-input2">Category</label>' +
         '<input id="swal-input2" class="swal2-input" placeholder="Category">' +
         '<label for="swal-input3">Notes </label>' +
@@ -116,34 +116,35 @@ function addExpense() {
 
 function deleteTransaction(transactionId) {
     Swal.fire({
-        title: "Delete Transaction?",
-        text: "This cannot be undone",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Delete",
-        showLoaderOnConfirm: true,
-        allowOutsideClick: () => !Swal.isLoading(),
-        preConfirm: async () => {
-            try {
-              const response = await fetch(`/api/deletetransaction/${transactionId}`, {
-                method: 'DELETE'
-              });
-              const data = await response.json();
-              if (response.ok) {
-                return { success: true };
-              } else if (response.status === 404) {
-                // Handle the 404 case here
-                return { success: true, message: 'Transaction not found, but deleted from the database' };
-              } else {
-                throw new Error(data.message || 'Failed to delete transaction');
-              }
-            } catch (error) {
-              return { success: false, error: error.message };
-            }
+      title: "Delete Transaction?",
+      text: "This cannot be undone",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      showLoaderOnConfirm: true,
+      allowOutsideClick: () => !Swal.isLoading(),
+      preConfirm: async () => {
+        try {
+          const response = await fetch(`/api/deletetransaction/${transactionId}`, {
+            method: 'DELETE'
+          });
+          const data = await response.json();
+          if (response.ok) {
+            return { success: true };
+          } else if (response.status === 404) {
+            // Handle the 404 case here
+            return { success: true, message: 'Transaction not found, but deleted from the database' };
+          } else {
+            throw new Error(data.message || 'Failed to delete transaction');
+          }
+        } catch (error) {
+          return { success: false, error: error.message };
         }
+      }
     })
     .then(result => {
-        console.log('Result value:', result.value);
+      console.log('Result value:', result.value);
+      if (result.isConfirmed) {
         if (result.value.success) {
           Swal.fire({
             title: "Transaction Deleted",
@@ -157,9 +158,13 @@ function deleteTransaction(transactionId) {
         } else {
           console.log('Result:', result);
         }
-      })
+      } else if (result.isDismissed) {
+        // User clicked the cancel button, do nothing
+        return;
+      }
+    })
     .catch(error => {
-        console.error('Error:', error);
-        Swal.fire("Error", "Failed to delete transaction", "error");
+      console.error('Error:', error);
+      Swal.fire("Error", "Failed to delete transaction", "error");
     });
-}
+  }
