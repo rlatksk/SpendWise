@@ -2,12 +2,14 @@ function addIncome() {
     Swal.fire({
         title: "Add Income",
         html:
-        '<label for="swal-input1">Income</label>' +
-        '<input id="swal-input1" type="number" class="swal2-input" placeholder="Amount">' +
-        '<label for="swal-input2">Category</label>' +
-        '<input id="swal-input2" class="swal2-input" placeholder="Category">' +
-        '<label for="swal-input3">Notes </label>' +
-        '<input id="swal-input3" class="swal2-input" placeholder="Notes">',
+        `<div style="display: flex; flex-direction: column; justify-content: center;">
+        <label for="swal-input1">Income</label>
+        <input id="swal-input1" type="number" class="swal2-input" placeholder="Amount">
+        <label for="swal-input2">Category</label>
+        <input id="swal-input2" class="swal2-input" placeholder="Category">
+        <label for="swal-input3">Notes </label>
+        <input id="swal-input3" class="swal2-input" placeholder="Notes">
+        </div>`,
         showCancelButton: true,
         confirmButtonText: "Add",
         preConfirm: async () => {
@@ -63,12 +65,14 @@ function addExpense() {
     Swal.fire({
         title: "Add Expense",
         html:
-        '<label for="swal-input1">Expense</label>' +
-        '<input id="swal-input1" type="number" class="swal2-input" placeholder="Amount">' +
-        '<label for="swal-input2">Category</label>' +
-        '<input id="swal-input2" class="swal2-input" placeholder="Category">' +
-        '<label for="swal-input3">Notes </label>' +
-        '<input id="swal-input3" class="swal2-input" placeholder="Notes">',
+        `<div style="display: flex; flex-direction: column; justify-content: center;">
+        <label for="swal-input1">Expense</label>
+        <input id="swal-input1" type="number" class="swal2-input" placeholder="Amount">
+        <label for="swal-input2">Category</label>
+        <input id="swal-input2" class="swal2-input" placeholder="Category">
+        <label for="swal-input3">Notes </label>
+        <input id="swal-input3" class="swal2-input" placeholder="Notes">
+        </div>`,
         showCancelButton: true,
         confirmButtonText: "Add",
         preConfirm: async () => {
