@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Transaction = require('../../db-schema/Transaction')
 const User = require("../../db-schema/User");
-const { insertTransaction, deleteTransaction, updateTransactionAmount, updateTransactionCategory, updateTransactionType, updateTransactionNote  } = require('../../functions/transactionsFunction');
+const { insertTransaction, deleteTransaction, updateTransactionAmount, updateTransactionCategory, updateTransactionType, updateTransactionNote, updateTransactionDate  } = require('../../functions/transactionsFunction');
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
@@ -45,11 +45,11 @@ router.get('/transactions', checkAuthenticated, async (req, res) => {
 router.post('/api/insertTransaction', checkAuthenticated, async (req, res) => {
   try {
     const user = await User.findOne({ id: req.session.passport.user });
-    const { type, category, notes, amount } = req.body;
+    const { type, category, notes, amount, date } = req.body;
     console.log(user.username)
     console.log(category)
     console.log('Request body:', req.body);
-    await insertTransaction(user.username, type, category, notes, amount, Date.now());
+    await insertTransaction(user.username, type, category, notes, amount, date);
     res.status(200).json({ message: 'Transaction inserted successfully' });
   } catch (err) {
     console.log('Error:', err);

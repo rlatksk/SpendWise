@@ -7,20 +7,29 @@ function addIncome() {
         <input id="swal-input1" type="number" class="swal2-input" placeholder="Amount">
         <label for="swal-input2">Category</label>
         <input id="swal-input2" class="swal2-input" placeholder="Category">
-        <label for="swal-input3">Notes </label>
+        <label for="swal-input3">Notes</label>
         <input id="swal-input3" class="swal2-input" placeholder="Notes">
+        <label for="swal-input4">Date</label>
+        <input id="swal-input4" type="date" class="swal2-input" placeholder="Date">
         </div>`,
+        footer: "If the date field is empty, transactions will be listed with current date",
         showCancelButton: true,
         confirmButtonText: "Add",
         preConfirm: async () => {
             const income = document.getElementById('swal-input1').value;
             const category = document.getElementById('swal-input2').value;
             const notes = document.getElementById('swal-input3').value;
+            const dateInput = document.getElementById('swal-input4');
+            let date = dateInput.value ? new Date(dateInput.value).toISOString() : Date.now();
 
             if (!income || !category) {
                 Swal.showValidationMessage('Income Amount and Category fields cannot be empty');
                 return;
               }
+
+            if(!dateInput){
+              dateInput = Date.now();
+            }
             
             // POST request
             return fetch('/api/insertTransaction', {
@@ -33,6 +42,7 @@ function addIncome() {
                     category: category, 
                     notes: notes,
                     amount: income,
+                    date: date
                 })
             })
             .then(response => {
@@ -72,13 +82,18 @@ function addExpense() {
         <input id="swal-input2" class="swal2-input" placeholder="Category">
         <label for="swal-input3">Notes </label>
         <input id="swal-input3" class="swal2-input" placeholder="Notes">
+        <label for="swal-input4">Date</label>
+        <input id="swal-input4" type="date" class="swal2-input" placeholder="Date">
         </div>`,
+        footer: "If the date field is empty, transactions will be listed with current date",
         showCancelButton: true,
         confirmButtonText: "Add",
         preConfirm: async () => {
             const expense = document.getElementById('swal-input1').value;
             const category = document.getElementById('swal-input2').value;
             const notes = document.getElementById('swal-input3').value;
+            const dateInput = document.getElementById('swal-input4');
+            let date = dateInput.value ? new Date(dateInput.value).toISOString() : Date.now();
 
             if (!expense || !category) {
                 Swal.showValidationMessage('Expense Amount and Category fields cannot be empty');
@@ -96,6 +111,7 @@ function addExpense() {
                     category: category, 
                     notes: notes,
                     amount: expense,
+                    date: date
                 })
             })
             .then(response => {
