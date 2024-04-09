@@ -437,6 +437,16 @@ textarea {
   border-bottom: 1px solid #000000;
 }
 
+.transactions-table a{
+  margin-right: 5px;
+}
+
+#editor{
+  font-size: small;
+  text-decoration: underline;
+  font-weight: bolder;
+}
+
 .transactions-table th:first-child,
 .transactions-table td:first-child {
   border-left: none;
@@ -544,5 +554,13 @@ input[type="password"] {
 }
 
 .footer {
-  margin: 30px 0;
+  margin: 4rem;
+  text-align: center;
+}
+
+.full-height {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 78vh;
 }

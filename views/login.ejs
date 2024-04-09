@@ -1,46 +1,48 @@
-<div
-  style="
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  "
->
-  <% if (messages.error) {%>
+<div class="full-height">
   <div
     style="
-      position: absolute;
-      top: 0;
-      width: 100%;
-      text-align: center;
-      background-color: #f8d7da;
-      color: #721c24;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     "
   >
-    <%= messages.error %>
-  </div>
-  <% } %>
-  <div class="register__div">
-    <h1>Login</h1>
-    <form
-      class="register__form"
-      action="/login"
-      method="POST"
-      enctype="application/x-www-form-urlencoded"
+    <% if (messages.error) {%>
+    <div
+      style="
+        position: absolute;
+        top: 0;
+        width: 100%;
+        text-align: center;
+        background-color: #f8d7da;
+        color: #721c24;
+      "
     >
-      <div class="username__form">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" required />
-      </div>
-      <div class="password__form">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required />
-      </div>
-      <button type="submit" class="register__button">Login</button>
-      <div class="login__form__links">
-        <p>Don't have an account?</p>
-        <a href="/register">Register here!</a>
-      </div>
-    </form>
+      <%= messages.error %>
+    </div>
+    <% } %>
+    <div class="register__div">
+      <h1>Login</h1>
+      <form
+        class="register__form"
+        action="/login"
+        method="POST"
+        enctype="application/x-www-form-urlencoded"
+      >
+        <div class="username__form">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+        <div class="password__form">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <button type="submit" class="register__button">Login</button>
+        <div class="login__form__links">
+          <p>Don't have an account?</p>
+          <a href="/register">Register here!</a>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
