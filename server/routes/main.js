@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Transaction = require('../../db-schema/Transaction')
 const User = require("../../db-schema/User");
-const { insertTransaction, deleteTransaction } = require('../../functions/transactionsFunction');
+const { insertTransaction, deleteTransaction, updateTransactionAmount, updateTransactionCategory, updateTransactionType, updateTransactionNote  } = require('../../functions/transactionsFunction');
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
@@ -65,6 +65,32 @@ router.delete('/api/deletetransaction/:transactionId', checkAuthenticated, async
   } catch (error) {
     console.error('Error deleting transaction:', error);
     res.status(500).json({ error: 'Failed to delete transaction' });
+  }
+});
+
+router.put('/api/edittransactions/:transactionId', checkAuthenticated, async (req, res) => {
+  try {
+    const transactionId = req.params.transactionId;
+    const { amount, category, type, date, note } = req.body;
+
+    if (amount) {
+      await updateTransactionAmount(transactionId, parseFloat(amount));
+    }
+    if (category) {
+      await updateTransactionCategory(transactionId, category);
+    }
+    if (type) {
+      await updateTransactionType(transactionId, type);
+    }
+    
+    if (note) {
+      await updateTransactionNote(transactionId, note);
+    }
+
+    res.status(200).json({ message: 'Transaction updated successfully' });
+  } catch (error) {
+    console.error('Error updating transaction:', error);
+    res.status(500).json({ error: 'Failed to update transaction' });
   }
 });
 

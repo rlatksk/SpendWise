@@ -159,7 +159,6 @@ function deleteTransaction(transactionId) {
           console.log('Result:', result);
         }
       } else if (result.isDismissed) {
-        // User clicked the cancel button, do nothing
         return;
       }
     })
@@ -167,4 +166,81 @@ function deleteTransaction(transactionId) {
       console.error('Error:', error);
       Swal.fire("Error", "Failed to delete transaction", "error");
     });
+  }
+
+function editTransaction(transactionId) {
+    Swal.fire({
+      title: "Edit Transaction",
+      html:
+      `
+        <div style="display: flex; flex-direction: column; justify-content: center;">
+            <label for="swal-input1">New Amount</label>
+            <input id="swal-input1" type="number" class="swal2-input" placeholder="Amount">
+            <label for="swal-input2">Category</label>
+            <input id="swal-input2" class="swal2-input" placeholder="Category">
+            <label for="swal-input3">Type</label>
+            <select id="swal-input3" class="swal2-input">
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+            </select>
+            <label for="swal-input4">Note</label>
+            <input id="swal-input4" class="swal2-input" placeholder="Note">
+        </div>
+        `,
+      showCancelButton: true,
+      confirmButtonText: "Update",
+      preConfirm: async () => {
+        const amount = document.getElementById("swal-input1").value;
+        const category = document.getElementById("swal-input2").value;
+        const type = document.getElementById("swal-input3").value;
+        const note = document.getElementById("swal-input4").value;
+
+        if (!amount || !category) {
+            Swal.showValidationMessage('Amount and Category fields cannot be empty');
+            return;
+          }    
+  
+        const updateData = {};
+  
+        if (amount) {
+          updateData.amount = amount;
+        }
+        if (category) {
+          updateData.category = category;
+        }
+        if (type) {
+          updateData.type = type;
+        }
+        if (note) {
+          updateData.note = note;
+        }
+  
+        try {
+          const response = await fetch(`/api/edittransactions/${transactionId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updateData)
+          });
+  
+          if (response.ok) {
+            Swal.fire({
+              title: "Transaction Updated",
+              icon: "success",
+              showConfirmButton: false,
+            });
+            setTimeout(() => {
+                location.reload();
+              }, 1500);
+          } else {
+            const error = await response.json();
+            throw new Error(error.error);
+          }
+        } catch (error) {
+          console.error('Error updating transaction:', error);
+          Swal.fire("Error", "Failed to update transaction", "error");
+        }
+      },
+    })
   }

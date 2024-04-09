@@ -68,7 +68,7 @@
                     <% } %>
                     <td><%= transaction.category %></td>
                     <td><%= transaction.notes %></td>
-                    <td id="editor"><a>Edit</a> <a onclick="deleteTransaction('<%= transaction._id %>')">Delete</a></td>
+                    <td id="editor"><a onclick="editTransaction('<%= transaction._id %>')" >Edit</a> <a onclick="deleteTransaction('<%= transaction._id %>')">Delete</a></td>
                 </tr>
             <% }); %>
         </tbody>
