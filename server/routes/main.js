@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Transaction = require('../../db-schema/Transaction')
 const User = require("../../db-schema/User");
+const moment = require('moment');
 const { insertTransaction, deleteTransaction, updateTransactionAmount, updateTransactionCategory, updateTransactionType, updateTransactionNote  } = require('../../functions/transactionsFunction');
 
 function checkAuthenticated(req, res, next) {
@@ -93,6 +94,59 @@ router.put('/api/edittransactions/:transactionId', checkAuthenticated, async (re
     res.status(500).json({ error: 'Failed to update transaction' });
   }
 });
+
+router.get("/transactions/today", checkAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findOne({ id: req.session.passport.user });
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const transactions = await Transaction.find({ username: user.username, date: { $gte: today } });
+    res.json(transactions);
+  } catch (error) {
+    console.error('Error fetching today\'s transactions:', error);
+    res.status(500).json({ error: 'Failed to fetch today\'s transactions' });
+  }
+});
+
+router.get("/transactions/last7days", checkAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findOne({ id: req.session.passport.user });
+    const startDate = moment().subtract(7, 'days').startOf('day').toDate();
+    const endDate = moment().endOf('day').toDate();
+    const transactions = await Transaction.find({ username: user.username, date: { $gte: startDate, $lte: endDate } });
+    res.json(transactions);
+  } catch (error) {
+    console.error('Error fetching today\'s transactions:', error);
+    res.status(500).json({ error: 'Failed to fetch today\'s transactions' });
+  }
+});
+
+router.get("/transactions/last30days", checkAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findOne({ id: req.session.passport.user });
+    const startDate = moment().subtract(30, 'days').startOf('day').toDate();
+    const endDate = moment().endOf('day').toDate();
+    const transactions = await Transaction.find({ username: user.username, date: { $gte: startDate, $lte: endDate } });
+    res.json(transactions);
+  } catch (error) {
+    console.error('Error fetching today\'s transactions:', error);
+    res.status(500).json({ error: 'Failed to fetch today\'s transactions' });
+  }
+});
+
+router.get("/transactions/range", checkAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findOne({ id: req.session.passport.user });
+    const startDate = moment(req.query.start).startOf('day').toDate();
+    const endDate = moment(req.query.end).endOf('day').toDate();
+    const transactions = await Transaction.find({ username: user.username, date: { $gte: startDate, $lte: endDate } });
+    res.json(transactions);
+  } catch (error) {
+    console.error('Error fetching transactions for selected date range:', error);
+    res.status(500).json({ error: 'Failed to fetch transactions for selected date range' });
+  }
+});
+
 
 router.get("/login", checkNotAuthenticated, (req, res) => {
   res.render("login", { title: "Login", showHeader: false });

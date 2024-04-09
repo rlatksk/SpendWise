@@ -1,76 +1,193 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#today").click(getTodayTransactions);
+    $("#last-7-days").click(getLast7DaysTransactions);
+    $("#last-30-days").click(getLast30DaysTransactions);
+    $("#select-date-range").click(selectDateRange);
+
+    function getTodayTransactions() {
+      $.ajax({
+        url: "/transactions/today",
+        type: "GET",
+        success: updateTransactionsList,
+        error: function (xhr, status, error) {
+          console.error("Error fetching today's transactions:", error);
+        },
+      });
+    }
+
+    function getLast7DaysTransactions() {
+      $.ajax({
+        url: "/transactions/last7days",
+        type: "GET",
+        success: updateTransactionsList,
+        error: function (xhr, status, error) {
+          console.error("Error fetching last 7 days' transactions:", error);
+        },
+      });
+    }
+
+    function getLast30DaysTransactions() {
+      $.ajax({
+        url: "/transactions/last30days",
+        type: "GET",
+        success: updateTransactionsList,
+        error: function (xhr, status, error) {
+          console.error("Error fetching last 30 days' transactions:", error);
+        },
+      });
+    }
+
+    function selectDateRange() {
+      Swal.fire({
+      title: '<strong>Select Date Range</strong>',
+      icon: 'info',
+      html: `
+      <div style="display: flex; flex-direction: column; align-items: center;">
+        <div style="display: flex; flex-direction: column; justify-content: center;">
+          <label for="start-date" style="margin-right: 10px;">Start Date:</label>
+          <input type="date" id="start-date" class="swal2-input">
+        </div>
+        <div style="display: flex; flex-direction: column; justify-content: center; margin-top: 20px;">
+          <label for="end-date" style="margin-right: 10px;">End Date:</label>
+          <input type="date" id="end-date" class="swal2-input">
+        </div>
+      </div>
+
+      `,
+      focusConfirm: false,
+      confirmButtonText: 'Submit',
+      confirmButtonColor: '#3085d6',
+      cancelButtonText: 'Cancel',
+      cancelButtonColor: '#d33',
+      showCancelButton: true,
+      preConfirm: () => {
+        const startDate = document.getElementById("start-date").value;
+        const endDate = document.getElementById("end-date").value;
+        if (!startDate || !endDate) {
+          Swal.showValidationMessage(
+            "Please select both start and end dates"
+          );
+          return false;
+        }
+        getDateRangeTransactions(startDate, endDate);
+      },
+    });
+  }
+
+    function getDateRangeTransactions(startDate, endDate) {
+      $.ajax({
+        url: "/transactions/range",
+        type: "GET",
+        data: { start: startDate, end: endDate },
+        success: updateTransactionsList,
+        error: function (xhr, status, error) {
+          console.error(
+            "Error fetching transactions for selected date range:",
+            error
+          );
+        },
+      });
+    }
+
+    function updateTransactionsList(transactions) {
+      $("#transactions tbody").empty();
+
+      transactions.forEach(function (transaction) {
+        var amount =
+          transaction.type === "expense"
+            ? -transaction.amount
+            : transaction.amount;
+        var date = new Date(transaction.date);
+        var row = `<tr data-transaction-id="${transaction._id}">
+                    <td>${date.toISOString().slice(0, 10)}</td>
+                    <td>${amount.toFixed(2)}</td>
+                    <td>${transaction.category}</td>
+                    <td>${transaction.notes}</td>
+                    <td id="editor"><a onclick="editTransaction('${
+                      transaction._id
+                    }')">Edit</a> <a onclick="deleteTransaction('${
+          transaction._id
+        }')">Delete</a></td>
+                  </tr>`;
+        $("#transactions tbody").append(row);
+      });
+    }
+  });
+</script>
+
 <div class="transactions-header">
-    <h1>Transactions</h1>
-    <nav>
-        <ul class="transactions-nav">
-            <li><button>Today</button></li>
-            <li><button>Last 7 Days</button></li>
-            <li><button>Last 30 Days</button></li>
-            <li class="select-date-range"><button>Select Date Range</button></li>
-        </ul>
-    </nav>
+  <h1>Transactions</h1>
+  <nav>
+    <ul class="transactions-nav">
+      <li><button id="today">Today</button></li>
+      <li><button id="last-7-days">Last 7 Days</button></li>
+      <li><button id="last-30-days">Last 30 Days</button></li>
+      <li class="select-date-range">
+        <button id="select-date-range">Select Date Range</button>
+      </li>
+    </ul>
+  </nav>
 </div>
 
 <div class="transactions-stats">
-    <div class="total-transactions">
-        <p>Total Transactions</p>
-        <h3><%= transactions.length %></h3>
-    </div>
-    <% let totalIncome = 0; %>
-    <% let totalExpense = 0; %>
-    <% transactions.forEach(transaction => { %>
-        <% if (transaction.type === 'income') { %>
-            <% totalIncome += transaction.amount; %>
-        <% } else { %>
-            <% totalExpense += transaction.amount; %>
-        <% } %>
-    <% }); %>
-    <div class="total-income">
-        <p>Total Income</p>
-        <h3>$<%= totalIncome.toFixed(2) %></h3>
-    </div>
-    <div class="total-expense">
-        <p>Total Expense</p>
-        <h3>$<%= totalExpense.toFixed(2) %></h3>
-    </div>
+  <div class="total-transactions">
+    <p>Total Transactions</p>
+    <h3><%= transactions.length %></h3>
+  </div>
+  <% let totalIncome = 0, totalExpense = 0; transactions.forEach(transaction =>
+  { if (transaction.type === 'income') { totalIncome += transaction.amount; }
+  else { totalExpense -= transaction.amount; } }); %>
+  <div class="total-income">
+    <p>Total Income</p>
+    <h3>$<%= totalIncome.toFixed(2) %></h3>
+  </div>
+  <div class="total-expense">
+    <p>Total Expense</p>
+    <h3>$<%= totalExpense.toFixed(2) %></h3>
+  </div>
 </div>
 
-<div class="transactions-list">
-    <div class="transactions-list-options">
-        <div class="transactions-list-header-left">
-            <button class="transactions-select-category">Select Category</button>
-            <button class="search-btn">Search</button>
-        </div>
-        <div>
-            <button class="download-btn">DOWNLOAD</button>
-            <button onclick="addIncome()" class="addIncome-btn">+ Income</button>
-            <button onclick="addExpense()" class="addExpense-btn">+ Expense</button>
-        </div>
+<div class="transactions-list" id="transactions">
+  <div class="transactions-list-options">
+    <div class="transactions-list-header-left">
+      <button class="transactions-select-category">Select Category</button>
+      <button class="search-btn">Search</button>
     </div>
-    <table class="transactions-table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Category</th>
-                <th>Notes</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <% transactions.forEach(transaction => { %>
-                <tr data-transaction-id="<%= transaction._id %>">
-                    <td><%= transaction.date.toISOString().slice(0, 10) %></td>
-                    <% if (transaction.type === 'expense') { %>
-                        <td>-$<%= Math.abs(transaction.amount).toFixed(2) %></td>
-                    <% } else { %>
-                        <td>$<%= transaction.amount.toFixed(2) %></td>
-                    <% } %>
-                    <td><%= transaction.category %></td>
-                    <td><%= transaction.notes %></td>
-                    <td id="editor"><a onclick="editTransaction('<%= transaction._id %>')" >Edit</a> <a onclick="deleteTransaction('<%= transaction._id %>')">Delete</a></td>
-                </tr>
-            <% }); %>
-        </tbody>
-    </table>
+    <div>
+      <button class="download-btn">DOWNLOAD</button>
+      <button onclick="addIncome()" class="addIncome-btn">+ Income</button>
+      <button onclick="addExpense()" class="addExpense-btn">+ Expense</button>
+    </div>
+  </div>
+  <table class="transactions-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Category</th>
+        <th>Notes</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% transactions.forEach(transaction => { %>
+      <tr data-transaction-id="<%= transaction._id %>">
+        <td><%= transaction.date.toISOString().slice(0, 10) %></td>
+        <td>
+          <%= (transaction.type === 'expense' ? -transaction.amount :
+          transaction.amount).toFixed(2) %>
+        </td>
+        <td><%= transaction.category %></td>
+        <td><%= transaction.notes %></td>
+        <td id="editor">
+          <a onclick="editTransaction('<%= transaction._id %>')">Edit</a>
+          <a onclick="deleteTransaction('<%= transaction._id %>')">Delete</a>
+        </td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
 </div>

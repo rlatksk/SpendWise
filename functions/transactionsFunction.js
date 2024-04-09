@@ -114,7 +114,7 @@ async function deleteTransactionsByUsername(usernameValue) {
 
 
 // // Testing the fucking new crud shit bullshit 
-// insertTransaction('JohnDoe', 'income', 'salary', 'Monthly salary', 5000, new Date());
+// insertTransaction('rlatksk', 'income', 'salary', 'Monthly salary', 5000, '2024-03-01');
 // insertTransaction('RLATKSK', 'expense', 'groceries', 'Weekly grocery shopping', 200, new Date());
 // insertTransaction('AliceSmith', 'income', 'freelance', 'Freelance work payment', 1000, new Date());
 // insertTransaction('BobJohnson', 'expense', 'rent', 'Monthly rent payment', 1500, new Date());
