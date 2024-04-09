@@ -43,14 +43,36 @@ router.get('/transactions', checkAuthenticated, async (req, res) => {
   }
 });
 
+router.get('/api/transactions/:transactionId', checkAuthenticated, async (req, res) => {
+  try {
+    const transactionId = req.params.transactionId;
+    const user = await User.findOne({ id: req.session.passport.user });
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const transaction = await Transaction.findOne({ _id: transactionId, username: user.username });
+    
+    if (!transaction) {
+      return res.status(404).json({ error: 'Transaction not found' });
+    }
+
+    res.status(200).json(transaction);
+  } catch (error) {
+    console.error('Error fetching transaction:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 router.post('/api/insertTransaction', checkAuthenticated, async (req, res) => {
   try {
     const user = await User.findOne({ id: req.session.passport.user });
-    const { type, category, notes, amount } = req.body;
+    const { type, category, notes, amount, date } = req.body;
     console.log(user.username)
     console.log(category)
     console.log('Request body:', req.body);
-    await insertTransaction(user.username, type, category, notes, amount, Date.now());
+    await insertTransaction(user.username, type, category, notes, amount, date);
     res.status(200).json({ message: 'Transaction inserted successfully' });
   } catch (err) {
     console.log('Error:', err);
@@ -72,10 +94,10 @@ router.delete('/api/deletetransaction/:transactionId', checkAuthenticated, async
 router.put('/api/edittransactions/:transactionId', checkAuthenticated, async (req, res) => {
   try {
     const transactionId = req.params.transactionId;
-    const { amount, category, type, date, note } = req.body;
+    const { amount, category, type, note, date } = req.body;
 
     if (amount) {
-      await updateTransactionAmount(transactionId, parseFloat(amount));
+      await updateTransactionAmount(transactionId, amount);
     }
     if (category) {
       await updateTransactionCategory(transactionId, category);
@@ -86,6 +108,10 @@ router.put('/api/edittransactions/:transactionId', checkAuthenticated, async (re
     
     if (note) {
       await updateTransactionNote(transactionId, note);
+    }
+
+    if (date) {
+      await updateTransactionDate(transactionId, date);
     }
 
     res.status(200).json({ message: 'Transaction updated successfully' });
