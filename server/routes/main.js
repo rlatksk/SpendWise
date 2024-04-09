@@ -42,6 +42,28 @@ router.get('/transactions', checkAuthenticated, async (req, res) => {
   }
 });
 
+router.get('/api/transactions/:transactionId', checkAuthenticated, async (req, res) => {
+  try {
+    const transactionId = req.params.transactionId;
+    const user = await User.findOne({ id: req.session.passport.user });
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const transaction = await Transaction.findOne({ _id: transactionId, username: user.username });
+    
+    if (!transaction) {
+      return res.status(404).json({ error: 'Transaction not found' });
+    }
+
+    res.status(200).json(transaction);
+  } catch (error) {
+    console.error('Error fetching transaction:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 router.post('/api/insertTransaction', checkAuthenticated, async (req, res) => {
   try {
     const user = await User.findOne({ id: req.session.passport.user });

@@ -194,85 +194,98 @@ function deleteTransaction(transactionId) {
     });
   }
 
-function editTransaction(transactionId) {
-    Swal.fire({
-      title: "Edit Transaction",
-      html:
-      `
+async function editTransaction(transactionId) {
+  try {
+    const response = await fetch(`/api/transactions/${transactionId}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch transaction details');
+    }
+      const transactionData = await response.json();
+  
+      Swal.fire({
+        title: "Edit Transaction",
+        html:
+        `
         <div style="display: flex; flex-direction: column; justify-content: center;">
-            <label for="swal-input1">New Amount</label>
-            <input id="swal-input1" type="number" class="swal2-input" placeholder="Amount">
-            <label for="swal-input2">Category</label>
-            <input id="swal-input2" class="swal2-input" placeholder="Category">
-            <label for="swal-input3">Type</label>
-            <select id="swal-input3" class="swal2-input">
-            <option value="income">Income</option>
-            <option value="expense">Expense</option>
-            </select>
-            <label for="swal-input4">Note</label>
-            <input id="swal-input4" class="swal2-input" placeholder="Note">
-            <label for="swal-input5">Date</label>
-            <input id="swal-input5" type="date" class="swal2-input" placeholder="Date">
+          <label for="swal-input1">New Amount</label>
+          <input id="swal-input1" type="number" class="swal2-input" placeholder="Amount" value="${transactionData.amount}">
+          <label for="swal-input2">Category</label>
+          <input id="swal-input2" class="swal2-input" placeholder="Category" value="${transactionData.category}">
+          <label for="swal-input3">Type</label>
+          <select id="swal-input3" class="swal2-input">
+            <option value="income" ${transactionData.type === 'income' ? 'selected' : ''}>Income</option>
+            <option value="expense" ${transactionData.type === 'expense' ? 'selected' : ''}>Expense</option>
+          </select>
+          <label for="swal-input4">Note</label>
+          <input id="swal-input4" class="swal2-input" placeholder="Note" value="${transactionData.notes}">
+          <label for="swal-input5">Date</label>
+          <input id="swal-input5" type="date" class="swal2-input" placeholder="Date" value="${transactionData.date}">
         </div>
         `,
-      showCancelButton: true,
-      confirmButtonText: "Update",
-      preConfirm: async () => {
-        const amount = document.getElementById("swal-input1").value;
-        const category = document.getElementById("swal-input2").value;
-        const type = document.getElementById("swal-input3").value;
-        const note = document.getElementById("swal-input4").value;
-        const date = document.getElementById("swal-input5").value;
-
-        if (!amount || !category) {
+        footer: "If the date field is empty, transaction date will not be changed",
+        showCancelButton: true,
+        confirmButtonText: "Update",
+        preConfirm: async () => {
+          const amount = document.getElementById("swal-input1").value;
+          const category = document.getElementById("swal-input2").value;
+          const type = document.getElementById("swal-input3").value;
+          const note = document.getElementById("swal-input4").value;
+          const date = document.getElementById("swal-input5").value;
+  
+          if (!amount || !category) {
             Swal.showValidationMessage('Amount and Category fields cannot be empty');
             return;
           }    
   
-        const updateData = {};
+          const updateData = {};
   
-        if (amount) {
-          updateData.amount = amount;
-        }
-        if (category) {
-          updateData.category = category;
-        }
-        if (type) {
-          updateData.type = type;
-        }
-        if (note) {
-          updateData.note = note;
-        }
-        if (date) {
-          updateData.date = date;
-      }
+          if (amount) {
+            updateData.amount = amount;
+          }
+          if (category) {
+            updateData.category = category;
+          }
+          if (type) {
+            updateData.type = type;
+          }
+          if (note) {
+            updateData.note = note;
+          }
+          if (date) {
+            updateData.date = date;
+          }
   
-        try {
-          const response = await fetch(`/api/edittransactions/${transactionId}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updateData)
-          });
-  
-          if (response.ok) {
-            Swal.fire({
-              title: "Transaction Updated",
-              icon: "success",
-              showConfirmButton: false,
+          try {
+            const response = await fetch(`/api/edittransactions/${transactionId}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(updateData)
             });
-            setTimeout(() => {
+  
+            if (response.ok) {
+              Swal.fire({
+                title: "Transaction Updated",
+                icon: "success",
+                showConfirmButton: false,
+              });
+              setTimeout(() => {
                 location.reload();
               }, 1500);
-          } else {
-            const error = await response.json();
-            throw new Error(error.error);
+            } else {
+              const error = await response.json();
+              throw new Error(error.error);
+            }
+          } catch (error) {
+            console.error('Error updating transaction:', error);
+            Swal.fire("Error", "Failed to update transaction", "error");
           }
-        } catch (error) {
-          console.error('Error updating transaction:', error);
-          Swal.fire("Error", "Failed to update transaction", "error");
-        }
-      },
-    })
+        },
+      });
+    } catch (error) {
+      console.error('Error fetching transaction details:', error);
+      Swal.fire("Error", "Failed to fetch transaction details", "error");
+    }
   }
+  
