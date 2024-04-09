@@ -10,12 +10,15 @@ function addIncome() {
         '<input id="swal-input3" class="swal2-input" placeholder="Notes">',
         showCancelButton: true,
         confirmButtonText: "Add",
-        showLoaderOnConfirm: true,
-        allowOutsideClick: () => !Swal.isLoading(),
-        preConfirm: () => {
+        preConfirm: async () => {
             const income = document.getElementById('swal-input1').value;
             const category = document.getElementById('swal-input2').value;
             const notes = document.getElementById('swal-input3').value;
+
+            if (!income || !category) {
+                Swal.showValidationMessage('Income Amount and Category fields cannot be empty');
+                return;
+              }
             
             // POST request
             return fetch('/api/insertTransaction', {
@@ -68,12 +71,15 @@ function addExpense() {
         '<input id="swal-input3" class="swal2-input" placeholder="Notes">',
         showCancelButton: true,
         confirmButtonText: "Add",
-        showLoaderOnConfirm: true,
-        allowOutsideClick: () => !Swal.isLoading(),
-        preConfirm: () => {
+        preConfirm: async () => {
             const expense = document.getElementById('swal-input1').value;
             const category = document.getElementById('swal-input2').value;
             const notes = document.getElementById('swal-input3').value;
+
+            if (!expense || !category) {
+                Swal.showValidationMessage('Expense Amount and Category fields cannot be empty');
+                return;
+              }
             
             // POST request
             return fetch('/api/insertTransaction', {
@@ -122,7 +128,7 @@ function deleteTransaction(transactionId) {
       showCancelButton: true,
       confirmButtonText: "Delete",
       showLoaderOnConfirm: true,
-      allowOutsideClick: () => !Swal.isLoading(),
+      allowOutsideClick: true,
       preConfirm: async () => {
         try {
           const response = await fetch(`/api/deletetransaction/${transactionId}`, {
