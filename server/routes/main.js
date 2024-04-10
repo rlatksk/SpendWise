@@ -4,7 +4,7 @@ const { Parser } = require('json2csv');
 const moment = require('moment');
 const Transaction = require('../../db-schema/Transaction')
 const User = require("../../db-schema/User");
-const { insertTransaction, deleteTransaction, updateTransactionAmount, updateTransactionCategory, updateTransactionType, updateTransactionNote  } = require('../../functions/transactionsFunction');
+const { insertTransaction, deleteTransaction, updateTransactionAmount, updateTransactionCategory, updateTransactionType, updateTransactionNote, updateTransactionDate  } = require('../../functions/transactionsFunction');
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
@@ -35,7 +35,7 @@ router.get("/", checkAuthenticated, async (req, res) => {
 router.get('/transactions', checkAuthenticated, async (req, res) => {
   try {
     const user = await User.find({ id: req.session.passport.user });
-    const transactions = await Transaction.find({ username: user[0].username });
+    const transactions = await Transaction.find({ username: user[0].username }).sort({ date: -1 });;
     // console.log(user, transactions);
     res.render('transactions', { title: 'Transactions', transactions }); // Pass the transactions data to the view
   } catch (error) {
