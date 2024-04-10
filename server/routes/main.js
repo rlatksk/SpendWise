@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const { Parser } = require('json2csv');
+const moment = require('moment');
 const Transaction = require('../../db-schema/Transaction')
 const User = require("../../db-schema/User");
-const moment = require('moment');
-const { insertTransaction, deleteTransaction, updateTransactionAmount, updateTransactionCategory, updateTransactionType, updateTransactionNote  } = require('../../functions/transactionsFunction');
+const { insertTransaction, deleteTransaction, updateTransactionAmount, updateTransactionCategory, updateTransactionType, updateTransactionNote, updateTransactionDate  } = require('../../functions/transactionsFunction');
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
@@ -34,7 +35,7 @@ router.get("/", checkAuthenticated, async (req, res) => {
 router.get('/transactions', checkAuthenticated, async (req, res) => {
   try {
     const user = await User.find({ id: req.session.passport.user });
-    const transactions = await Transaction.find({ username: user[0].username });
+    const transactions = await Transaction.find({ username: user[0].username }).sort({ date: -1 });
     // console.log(user, transactions);
     res.render('transactions', { title: 'Transactions', transactions }); // Pass the transactions data to the view
   } catch (error) {
@@ -43,9 +44,38 @@ router.get('/transactions', checkAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/api/transactions/csv", checkAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findOne({ id: req.session.passport.user });
+    if (!user) throw new Error('User not found');
+    
+    const transactions = await Transaction.find({ username: user.username });
+    if (!transactions) throw new Error('No transactions found');
+    
+    const json2csvParser = new Parser();
+    const csv = json2csvParser.parse(transactions.map(transaction => ({
+      Date: moment(transaction.date).format('YYYY-MM-DD'),
+      Type: transaction.type,
+      Category: transaction.category,
+      Amount: transaction.amount,
+      Notes: transaction.notes
+    })));
+    res.header('Content-Type', 'text/csv');
+    res.attachment("transactions.csv");
+    return res.send(csv);
+  } catch (error) {
+    console.error('Error generating transactions CSV:', error);
+    res.status(500).json({ error: 'Failed to generate transactions CSV', details: error.message });
+  }
+});
+
 router.get('/api/transactions/:transactionId', checkAuthenticated, async (req, res) => {
   try {
     const transactionId = req.params.transactionId;
+    if (!transactionId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).send("Invalid transaction ID format.");
+    }
+
     const user = await User.findOne({ id: req.session.passport.user });
     
     if (!user) {
@@ -126,7 +156,7 @@ router.get("/transactions/today", checkAuthenticated, async (req, res) => {
     const user = await User.findOne({ id: req.session.passport.user });
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const transactions = await Transaction.find({ username: user.username, date: { $gte: today } });
+    const transactions = await Transaction.find({ username: user.username, date: { $gte: today } }).sort({ date: -1 });
     res.json(transactions);
   } catch (error) {
     console.error('Error fetching today\'s transactions:', error);
@@ -139,7 +169,7 @@ router.get("/transactions/last7days", checkAuthenticated, async (req, res) => {
     const user = await User.findOne({ id: req.session.passport.user });
     const startDate = moment().subtract(7, 'days').startOf('day').toDate();
     const endDate = moment().endOf('day').toDate();
-    const transactions = await Transaction.find({ username: user.username, date: { $gte: startDate, $lte: endDate } });
+    const transactions = await Transaction.find({ username: user.username, date: { $gte: startDate, $lte: endDate } }).sort({ date: -1 });
     res.json(transactions);
   } catch (error) {
     console.error('Error fetching today\'s transactions:', error);
@@ -152,7 +182,7 @@ router.get("/transactions/last30days", checkAuthenticated, async (req, res) => {
     const user = await User.findOne({ id: req.session.passport.user });
     const startDate = moment().subtract(30, 'days').startOf('day').toDate();
     const endDate = moment().endOf('day').toDate();
-    const transactions = await Transaction.find({ username: user.username, date: { $gte: startDate, $lte: endDate } });
+    const transactions = await Transaction.find({ username: user.username, date: { $gte: startDate, $lte: endDate } }).sort({ date: -1 });
     res.json(transactions);
   } catch (error) {
     console.error('Error fetching today\'s transactions:', error);
@@ -165,7 +195,7 @@ router.get("/transactions/range", checkAuthenticated, async (req, res) => {
     const user = await User.findOne({ id: req.session.passport.user });
     const startDate = moment(req.query.start).startOf('day').toDate();
     const endDate = moment(req.query.end).endOf('day').toDate();
-    const transactions = await Transaction.find({ username: user.username, date: { $gte: startDate, $lte: endDate } });
+    const transactions = await Transaction.find({ username: user.username, date: { $gte: startDate, $lte: endDate } }).sort({ date: -1 });
     res.json(transactions);
   } catch (error) {
     console.error('Error fetching transactions for selected date range:', error);

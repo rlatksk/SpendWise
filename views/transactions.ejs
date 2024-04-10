@@ -6,6 +6,7 @@
     $("#last-7-days").click(getLast7DaysTransactions);
     $("#last-30-days").click(getLast30DaysTransactions);
     $("#select-date-range").click(selectDateRange);
+    $(".download-btn").click(downloadTransactionsCSV);
 
     function getTodayTransactions() {
       $.ajax({
@@ -115,6 +116,26 @@
         $("#transactions tbody").append(row);
       });
     }
+
+    function downloadTransactionsCSV() {
+      $.ajax({
+        url: "/api/transactions/csv",
+        type: "GET",
+        success: function(data) {
+          const csvBlob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+          const csvUrl = URL.createObjectURL(csvBlob);
+          const downloadLink = document.createElement("a");
+          downloadLink.href = csvUrl;
+          downloadLink.setAttribute("download", "transactions.csv");
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+        },
+        error: function(xhr, status, error) {
+          console.error("Error downloading transactions CSV:", error);
+        }
+      });
+    }
   });
 </script>
 
@@ -157,7 +178,7 @@
       <button class="search-btn">Search</button>
     </div>
     <div>
-      <button class="download-btn">DOWNLOAD</button>
+      <button class="download-btn" onclick="downloadTransactionsCSV()">DOWNLOAD</button>
       <button onclick="addIncome()" class="addIncome-btn">+ Income</button>
       <button onclick="addExpense()" class="addExpense-btn">+ Expense</button>
     </div>
