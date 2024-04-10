@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const { Parser } = require('json2csv');
+const moment = require('moment');
 const Transaction = require('../../db-schema/Transaction')
 const User = require("../../db-schema/User");
-const moment = require('moment');
 const { insertTransaction, deleteTransaction, updateTransactionAmount, updateTransactionCategory, updateTransactionType, updateTransactionNote  } = require('../../functions/transactionsFunction');
 
 function checkAuthenticated(req, res, next) {
@@ -43,9 +44,38 @@ router.get('/transactions', checkAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/api/transactions/csv", checkAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findOne({ id: req.session.passport.user });
+    if (!user) throw new Error('User not found');
+    
+    const transactions = await Transaction.find({ username: user.username });
+    if (!transactions) throw new Error('No transactions found');
+    
+    const json2csvParser = new Parser();
+    const csv = json2csvParser.parse(transactions.map(transaction => ({
+      Date: moment(transaction.date).format('YYYY-MM-DD'),
+      Type: transaction.type,
+      Category: transaction.category,
+      Amount: transaction.amount,
+      Notes: transaction.notes
+    })));
+    res.header('Content-Type', 'text/csv');
+    res.attachment("transactions.csv");
+    return res.send(csv);
+  } catch (error) {
+    console.error('Error generating transactions CSV:', error);
+    res.status(500).json({ error: 'Failed to generate transactions CSV', details: error.message });
+  }
+});
+
 router.get('/api/transactions/:transactionId', checkAuthenticated, async (req, res) => {
   try {
     const transactionId = req.params.transactionId;
+    if (!transactionId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).send("Invalid transaction ID format.");
+    }
+
     const user = await User.findOne({ id: req.session.passport.user });
     
     if (!user) {
