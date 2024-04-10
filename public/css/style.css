@@ -169,10 +169,10 @@ textarea {
 
 .home-header {
   padding: 30px;
-  border-radius: 20px;
+  border-radius: 20px 20px 0px 0px;
   background-color: var(--white);
   color: var(--black);
-  margin-bottom: 20px;
+  margin-bottom: 0;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-around;
@@ -241,7 +241,7 @@ textarea {
   display: flex;
   justify-content: center;
   margin-top: 0;
-  margin-bottom: 50px;
+  margin-bottom: 25px;
 }
 
 .add-transaction-btn {
@@ -251,40 +251,53 @@ textarea {
   color: var(--white);
   padding: 10px 20px;
   border: none;
-  border-radius: 10px;
+  border-radius: 0px 0px 20px 20px;
   font-size: var(--font-size-md);
   cursor: pointer;
   transition: background-color 0.3s ease;
+  width: 100%;
+  margin-top: 0;
 }
 
 .add-transaction-btn:hover {
   background-color: var(--darker-blue);
 }
 
-.bar-chart-container {
+.charts{
   display: flex;
   flex-direction: column;
+  gap: 20px;
 }
 
-.income-chart,
-.expense-chart {
-  background-color: var(--white);
-  padding: 20px;
-  border-radius: 20px;
+.doughnut-chart-container{
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
 }
 
-.expense-chart {
-  margin-top: 100px;
+.type-doughnut-chart,
+.category-doughnut-chart,
+.line-chart{
+  text-align: center;
 }
 
-.income-chart-header,
-.expense-chart-header {
+.type-doughnut-chart h2,
+.category-doughnut-chart h2,
+.line-chart h2{
   background-color: var(--black);
+  border-radius: 20px 20px 0px 0px;
+  padding: 15px;
   color: var(--white);
-  padding: 5px;
-  padding-left: 30px;
-  border-radius: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
+}
+
+.type-doughnut-chart canvas,
+.category-doughnut-chart canvas,
+.line-chart canvas{
+  margin-top: 0;
+  background-color: rgba(255, 255, 255, 0.669);
+  padding: 40px;
+  border-radius: 0px 0px 20px 20px;
 }
 
 /* Transaction Page */
@@ -392,6 +405,10 @@ textarea {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   background-color: var(--lighter-black);
   color: white;
+}
+
+.download-btn{
+  margin-left: 15px;
 }
 
 .addIncome-btn{

@@ -44,117 +44,190 @@
     </div>
 </form>
 
-<div class="bar-chart-container">
-    <div class="income-chart">
-        <div class="income-chart-header">
-            <h2>Income Past 30 Days</h2>
+<div class="charts">
+    <div class="doughnut-chart-container">
+        <div class="type-doughnut-chart">
+            <h2>Types</h2>
+            <canvas id="doughnutChartTransactionTypes" data-transactions='<%- transactionsJSON %>'></canvas>
         </div>
-        <canvas id="barChartIncome" data-transactions='<%- transactionsJSON %>'></canvas>
-    <div class="expense-chart">
-        <div class="expense-chart-header">
-            <h2>Expense Past 30 Days</h2>
+        <div class="category-doughnut-chart">
+            <h2>Categories</h2>
+            <canvas id="doughnutChartCategories" data-transactions='<%- transactionsJSON %>'></canvas>
         </div>
-        <canvas id="barChartExpense" data-transactions='<%- transactionsJSON %>'></canvas>
+    </div>
+
+    <div class="line-chart">
+        <h2>Income & Expense Amount</h2>
+        <canvas id="lineChartIncomeExpense" data-transactions='<%- transactionsJSON %>'></canvas>
     </div>
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-    // Retrieve the transaction data from the data attribute
-    const transactionsData = JSON.parse(document.getElementById('barChartIncome').dataset.transactions);
+        const transactionsData = JSON.parse(document.getElementById('doughnutChartTransactionTypes').dataset.transactions);
 
-    // Sort transactions in descending order based on date
-    transactionsData.sort((a, b) => new Date(b.date) - new Date(a.date));
+        // Generate labels and data arrays for the past 30 days
+        const { labels, incomeData, expenseData } = generateChartData(transactionsData);
 
-    // Generate labels and data arrays for the past 30 days
-    const { labels, incomeData, expenseData } = generateChartData(transactionsData);
-
-    // Create Chart.js instance for income
-    var ctxIncome = document.getElementById('barChartIncome').getContext('2d');
-    var myChartIncome = new Chart(ctxIncome, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Income',
-                data: incomeData,
-                backgroundColor: 'rgba(75, 192, 192, 0.6)', // Aqua color
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
+        // Create Chart.js instance for transaction types
+        var ctxTransactionTypes = document.getElementById('doughnutChartTransactionTypes').getContext('2d');
+        var doughnutChartTransactionTypes = new Chart(ctxTransactionTypes, {
+            type: 'doughnut',
+            data: {
+                labels: ['Income', 'Expense'],
+                datasets: [{
+                    label: 'Transaction Types',
+                    data: generateTypeData(transactionsData),
+                    backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)']
                 }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                }
             }
+        });
+
+        // Create Chart.js instance for categories
+        var ctxCategories = document.getElementById('doughnutChartCategories').getContext('2d');
+        var doughnutChartCategories = new Chart(ctxCategories, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(generateCategoryData(transactionsData)),
+                datasets: [{
+                    label: 'Categories',
+                    data: Object.values(generateCategoryData(transactionsData)),
+                    backgroundColor: generateRandomColors(Object.keys(generateCategoryData(transactionsData)).length)
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                }
+            }
+        });
+
+        // Create Chart.js instance for line chart (Income & Expense)
+        var ctxLineChart = document.getElementById('lineChartIncomeExpense').getContext('2d');
+        var lineChartIncomeExpense = new Chart(ctxLineChart, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Income',
+                    data: incomeData,
+                    fill: false,
+                    borderColor: 'rgba(75, 192, 192, 0.6)',
+                    tension: 0.1
+                },
+                {
+                    label: 'Expense',
+                    data: expenseData,
+                    fill: false,
+                    borderColor: 'rgba(255, 99, 132, 0.6)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        // Function to generate data for doughnut chart (Transaction Types)
+        function generateTypeData(transactions) {
+            let incomeCount = 0;
+            let expenseCount = 0;
+
+            transactions.forEach(transaction => {
+                if (transaction.type === 'income') {
+                    incomeCount++;
+                } else {
+                    expenseCount++;
+                }
+            });
+
+            return [incomeCount, expenseCount];
+        }
+
+        // Function to generate data for doughnut chart (Categories)
+        function generateCategoryData(transactions) {
+            const categoryCounts = {};
+            const currentDate = new Date();
+
+            transactions.forEach(transaction => {
+                const transactionDate = new Date(transaction.date);
+                if (isWithinLast30Days(transactionDate, currentDate)) {
+                    const category = transaction.category.toLowerCase();
+                    categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+                }
+            });
+
+            return categoryCounts;
+        }
+
+        // Function to generate random background colors for doughnut chart
+        function generateRandomColors(count) {
+            const colors = [];
+            for (let i = 0; i < count; i++) {
+                colors.push(`rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.6)`);
+            }
+            return colors;
+        }
+
+        // Function to check if a date is within the last 30 days
+        function isWithinLast30Days(date, currentDate) {
+            const thirtyDaysAgo = new Date(currentDate);
+            thirtyDaysAgo.setDate(currentDate.getDate() - 29); // 30 days ago
+            return date >= thirtyDaysAgo && date <= currentDate;
+        }
+
+        // Function to generate labels and data arrays for the past 30 days
+        function generateChartData(transactions) {
+            const labels = [];
+            const incomeData = [];
+            const expenseData = [];
+            const currentDate = new Date();
+
+            for (let i = 29; i >= 0; i--) {
+                const date = new Date(currentDate);
+                date.setDate(date.getDate() - i);
+                labels.push(formatDate(date));
+
+                const transactionsOnDate = transactions.filter(transaction => isSameDay(new Date(transaction.date), date));
+                if (transactionsOnDate.length > 0) {
+                    incomeData.push(transactionsOnDate.filter(transaction => transaction.type === 'income').reduce((total, transaction) => total + transaction.amount, 0));
+                    expenseData.push(transactionsOnDate.filter(transaction => transaction.type === 'expense').reduce((total, transaction) => total + transaction.amount, 0));
+                } else {
+                    incomeData.push(0);
+                    expenseData.push(0);
+                }
+            }
+            return { labels, incomeData, expenseData };
+        }
+
+        // Function to check if two dates are the same day
+        function isSameDay(date1, date2) {
+            return date1.getFullYear() === date2.getFullYear() &&
+                date1.getMonth() === date2.getMonth() &&
+                date1.getDate() === date2.getDate();
+        }
+
+        // Function to format date as "DD-MM"
+        function formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            return `${day}-${month}`;
         }
     });
-
-    // Create Chart.js instance for expense
-    var ctxExpense = document.getElementById('barChartExpense').getContext('2d');
-    var myChartExpense = new Chart(ctxExpense, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Expense',
-                data: expenseData,
-                backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
-
-    // Function to generate labels and data arrays for the past 30 days
-    function generateChartData(transactions) {
-        const labels = [];
-        const incomeData = [];
-        const expenseData = [];
-        const currentDate = new Date();
-        for (let i = 29; i >= 0; i--) {
-            const date = new Date(currentDate);
-            date.setDate(date.getDate() - i);
-            labels.push(formatDate(date));
-            const transactionsOnDate = transactions.filter(transaction => isSameDay(new Date(transaction.date), date));
-            if (transactionsOnDate.length > 0) {
-                incomeData.push(transactionsOnDate.filter(transaction => transaction.type === 'income').reduce((total, transaction) => total + transaction.amount, 0));
-                expenseData.push(transactionsOnDate.filter(transaction => transaction.type === 'expense').reduce((total, transaction) => total + transaction.amount, 0));
-            } else {
-                incomeData.push(0);
-                expenseData.push(0);
-            }
-        }
-        return { labels, incomeData, expenseData };
-    }
-
-    // Function to check if two dates are the same day
-    function isSameDay(date1, date2) {
-        return date1.getFullYear() === date2.getFullYear() &&
-            date1.getMonth() === date2.getMonth() &&
-            date1.getDate() === date2.getDate();
-    }
-
-    // Function to format date as "DD-MM"
-    function formatDate(date) {
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        return `${day}-${month}`;
-    }
-});
 </script>
