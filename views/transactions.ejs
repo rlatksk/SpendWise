@@ -1,89 +1,139 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css"/>
+
 <script>
   $(document).ready(function () {
-    $("#today").click(getTodayTransactions);
-    $("#last-7-days").click(getLast7DaysTransactions);
-    $("#last-30-days").click(getLast30DaysTransactions);
     $("#select-date-range").click(selectDateRange);
     $(".download-btn").click(downloadTransactionsCSV);
+    $("#transactions-table").DataTable({
+      columnDefs: [
+        {
+          targets: [4],
+          orderable: false,
+          searchable: false,
+        },
+      ],
+      order: [[0, "desc"]],
+    });
 
-    function getTodayTransactions() {
+    $(".dataTables_info").empty();
+
+    function loadTransactionsIntoTable(transactions) {
+      $("#transactions-table").DataTable().clear();
+
+      transactions.forEach(function (transaction) {
+        var amount =
+          transaction.type === "expense"
+            ? -transaction.amount
+            : transaction.amount;
+        var date = new Date(transaction.date).toISOString().slice(0, 10);
+        $("#transactions-table")
+          .DataTable()
+          .row.add([
+            date,
+            amount.toFixed(2),
+            transaction.category,
+            transaction.notes,
+            `<a onclick="editTransaction('${transaction._id}')">Edit</a> <a onclick="deleteTransaction('${transaction._id}')">Delete</a>`,
+          ]);
+      });
+
+      $("#transactions-table").DataTable().draw();
+
+      let totalTransactions = transactions.length;
+      let totalIncome = 0;
+      let totalExpense = 0;
+
+      transactions.forEach(function (transaction) {
+        if (transaction.type === "income") {
+          totalIncome += transaction.amount;
+        } else {
+          totalExpense -= transaction.amount;
+        }
+      });
+
+      $(".total-transactions h3").text(totalTransactions);
+      $(".total-income h3").text("$" + totalIncome.toFixed(2));
+      $(".total-expense h3").text("$" + totalExpense.toFixed(2));
+    }
+
+    $("#today").click(function () {
       $.ajax({
         url: "/transactions/today",
         type: "GET",
-        success: updateTransactionsList,
+        success: loadTransactionsIntoTable,
         error: function (xhr, status, error) {
           console.error("Error fetching today's transactions:", error);
         },
       });
-    }
+    });
 
-    function getLast7DaysTransactions() {
+    $("#last-7-days").click(function () {
       $.ajax({
         url: "/transactions/last7days",
         type: "GET",
-        success: updateTransactionsList,
+        success: loadTransactionsIntoTable,
         error: function (xhr, status, error) {
           console.error("Error fetching last 7 days' transactions:", error);
         },
       });
-    }
+    });
 
-    function getLast30DaysTransactions() {
+    $("#last-30-days").click(function () {
       $.ajax({
         url: "/transactions/last30days",
         type: "GET",
-        success: updateTransactionsList,
+        success: loadTransactionsIntoTable,
         error: function (xhr, status, error) {
           console.error("Error fetching last 30 days' transactions:", error);
         },
       });
-    }
+    });
 
     function selectDateRange() {
       Swal.fire({
-      title: '<strong>Select Date Range</strong>',
-      icon: 'info',
-      html: `
-      <div style="display: flex; flex-direction: column; align-items: center;">
-        <div style="display: flex; flex-direction: column; justify-content: center;">
-          <label for="start-date" style="margin-right: 10px;">Start Date:</label>
-          <input type="date" id="start-date" class="swal2-input">
-        </div>
-        <div style="display: flex; flex-direction: column; justify-content: center; margin-top: 20px;">
-          <label for="end-date" style="margin-right: 10px;">End Date:</label>
-          <input type="date" id="end-date" class="swal2-input">
-        </div>
-      </div>
-
-      `,
-      focusConfirm: false,
-      confirmButtonText: 'Submit',
-      confirmButtonColor: '#3085d6',
-      cancelButtonText: 'Cancel',
-      cancelButtonColor: '#d33',
-      showCancelButton: true,
-      preConfirm: () => {
-        const startDate = document.getElementById("start-date").value;
-        const endDate = document.getElementById("end-date").value;
-        if (!startDate || !endDate) {
-          Swal.showValidationMessage(
-            "Please select both start and end dates"
-          );
-          return false;
-        }
-        getDateRangeTransactions(startDate, endDate);
-      },
-    });
-  }
+        title: "<strong>Select Date Range</strong>",
+        icon: "info",
+        html: `
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <label for="start-date" style="margin-right: 10px;">Start Date:</label>
+                        <input type="date" id="start-date" class="swal2-input">
+                    </div>
+                    <div style="display: flex; flex-direction: column; justify-content: center; margin-top: 20px;">
+                        <label for="end-date" style="margin-right: 10px;">End Date:</label>
+                        <input type="date" id="end-date" class="swal2-input">
+                    </div>
+                </div>
+            `,
+        focusConfirm: false,
+        confirmButtonText: "Submit",
+        confirmButtonColor: "#3085d6",
+        cancelButtonText: "Cancel",
+        cancelButtonColor: "#d33",
+        showCancelButton: true,
+        preConfirm: () => {
+          const startDate = document.getElementById("start-date").value;
+          const endDate = document.getElementById("end-date").value;
+          if (!startDate || !endDate) {
+            Swal.showValidationMessage(
+              "Please select both start and end dates"
+            );
+            return false;
+          }
+          getDateRangeTransactions(startDate, endDate);
+        },
+      });
+    }
 
     function getDateRangeTransactions(startDate, endDate) {
       $.ajax({
         url: "/transactions/range",
         type: "GET",
         data: { start: startDate, end: endDate },
-        success: updateTransactionsList,
+        success: loadTransactionsIntoTable,
         error: function (xhr, status, error) {
           console.error(
             "Error fetching transactions for selected date range:",
@@ -93,52 +143,12 @@
       });
     }
 
-    function updateTransactionsList(transactions) {
-      let totalTransactions = transactions.length;
-      let totalIncome = 0;
-      let totalExpense = 0;
-
-      transactions.forEach(function (transaction) {
-          if (transaction.type === 'income') {
-              totalIncome += transaction.amount;
-          } else {
-              totalExpense -= transaction.amount;
-          }
-      });
-      
-      $(".total-transactions h3").text(totalTransactions);
-      $(".total-income h3").text("$" + totalIncome.toFixed(2));
-      $(".total-expense h3").text("$" + totalExpense.toFixed(2));
-
-      $("#transactions tbody").empty();
-
-      transactions.forEach(function (transaction) {
-        var amount =
-          transaction.type === "expense"
-            ? -transaction.amount
-            : transaction.amount;
-        var date = new Date(transaction.date);
-        var row = `<tr data-transaction-id="${transaction._id}">
-                    <td>${date.toISOString().slice(0, 10)}</td>
-                    <td>${amount.toFixed(2)}</td>
-                    <td>${transaction.category}</td>
-                    <td>${transaction.notes}</td>
-                    <td id="editor"><a onclick="editTransaction('${
-                      transaction._id
-                    }')">Edit</a> <a onclick="deleteTransaction('${
-          transaction._id
-        }')">Delete</a></td>
-                  </tr>`;
-        $("#transactions tbody").append(row);
-      });
-    }
-
     function downloadTransactionsCSV() {
       $.ajax({
         url: "/api/transactions/csv",
         type: "GET",
-        success: function(data) {
-          const csvBlob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+        success: function (data) {
+          const csvBlob = new Blob([data], { type: "text/csv;charset=utf-8;" });
           const csvUrl = URL.createObjectURL(csvBlob);
           const downloadLink = document.createElement("a");
           downloadLink.href = csvUrl;
@@ -147,13 +157,38 @@
           downloadLink.click();
           document.body.removeChild(downloadLink);
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
           console.error("Error downloading transactions CSV:", error);
-        }
+        },
       });
     }
+
+    // Function to filter transactions by type (income or expense)
+    $("#filter-income").click(function () {
+      var table = $("#transactions-table").DataTable();
+      table.column(1).search("^[^\\-]", true, false).draw();
+    });
+
+    $("#filter-expense").click(function () {
+      var table = $("#transactions-table").DataTable();
+      table.column(1).search("^\\-", true, false).draw();
+    });
+
+    $("#filter-reset").click(function () {
+      var table = $("#transactions-table").DataTable();
+      table.column(1).search("").draw();
+    });
   });
 </script>
+
+<style>
+  .dataTables_length{
+    height: 50px;
+  }
+  .dataTables_length label{
+    font-size: 0;
+  }
+</style>
 
 <div class="transactions-header">
   <h1>Transactions</h1>
@@ -190,16 +225,19 @@
 <div class="transactions-list" id="transactions">
   <div class="transactions-list-options">
     <div class="transactions-list-header-left">
-      <button class="transactions-select-category">Select Category</button>
-      <button class="search-btn">Search</button>
+      <button id="filter-income">Income Only</button>
+      <button id="filter-expense">Expense Only</button>
+      <button id="filter-reset">Reset Filter</button>
     </div>
     <div>
-      <button class="download-btn" onclick="downloadTransactionsCSV()">DOWNLOAD</button>
+      <button class="download-btn" onclick="downloadTransactionsCSV()">
+        DOWNLOAD
+      </button>
       <button onclick="addIncome()" class="addIncome-btn">+ Income</button>
       <button onclick="addExpense()" class="addExpense-btn">+ Expense</button>
     </div>
   </div>
-  <table class="transactions-table">
+  <table class="stripe hover order-column row-border" id="transactions-table">
     <thead>
       <tr>
         <th>Date</th>
