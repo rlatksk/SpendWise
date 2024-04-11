@@ -20,10 +20,8 @@
                     transactionDate.getFullYear() === today.getFullYear()
                 ) { %>
                     <% if (transaction.type === 'income') { %>
-                        // The total income today
                         <% totalIncome += transaction.amount; %>
                     <% } else { %>
-                        /// The total expense today
                         <% totalExpense += transaction.amount; %>
                     <% } %>
                 <% } %>
@@ -137,11 +135,9 @@
             },
             options: {
                 scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
         });

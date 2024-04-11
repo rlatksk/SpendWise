@@ -388,6 +388,7 @@ textarea {
 .transactions-list-header-left {
   display: flex;
   align-items: center;
+  gap: 5px;
 }
 
 .transactions-select-category {
@@ -395,8 +396,10 @@ textarea {
 }
 
 .transactions-select-category,
-.search-btn,
-.download-btn{
+.download-btn,
+#filter-income,
+#filter-expense,
+#filter-reset{
   font-family: 'Poppins', sans-serif;
   border: none;
   padding: 10px 20px;
@@ -441,7 +444,7 @@ textarea {
   font-weight: bold;
 }
 
-.transactions-table {
+/* .transactions-table {
   width: 100%;
   border-collapse: collapse;
 }
@@ -452,18 +455,20 @@ textarea {
   text-align: left;
   border-top: 1px solid #000000;
   border-bottom: 1px solid #000000;
-}
+} */
 
-.transactions-table a{
+/* .transactions-table a{
   margin-right: 5px;
-}
+} */
 
 #editor{
+  display: flex;
+  justify-content: space-around;
   font-size: small;
   text-decoration: underline;
   font-weight: bolder;
 }
-
+/* 
 .transactions-table th:first-child,
 .transactions-table td:first-child {
   border-left: none;
@@ -472,7 +477,7 @@ textarea {
 .transactions-table th:last-child,
 .transactions-table td:last-child {
   border-right: none;
-}
+} */
 
 .register__form {
   background-color: #ffffff;
