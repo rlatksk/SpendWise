@@ -20,8 +20,10 @@
                     transactionDate.getFullYear() === today.getFullYear()
                 ) { %>
                     <% if (transaction.type === 'income') { %>
+                        // The total income today
                         <% totalIncome += transaction.amount; %>
                     <% } else { %>
+                        /// The total expense today
                         <% totalExpense += transaction.amount; %>
                     <% } %>
                 <% } %>
@@ -167,10 +169,8 @@
 
             transactions.forEach(transaction => {
                 const transactionDate = new Date(transaction.date);
-                if (isWithinLast30Days(transactionDate, currentDate)) {
                     const category = transaction.category.toLowerCase();
                     categoryCounts[category] = (categoryCounts[category] || 0) + 1;
-                }
             });
 
             return categoryCounts;
@@ -183,13 +183,6 @@
                 colors.push(`rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.6)`);
             }
             return colors;
-        }
-
-        // Function to check if a date is within the last 30 days
-        function isWithinLast30Days(date, currentDate) {
-            const thirtyDaysAgo = new Date(currentDate);
-            thirtyDaysAgo.setDate(currentDate.getDate() - 29); // 30 days ago
-            return date >= thirtyDaysAgo && date <= currentDate;
         }
 
         // Function to generate labels and data arrays for the past 30 days

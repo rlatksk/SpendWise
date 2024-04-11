@@ -23,7 +23,12 @@ function checkNotAuthenticated(req, res, next) {
 router.get("/", checkAuthenticated, async (req, res) => {
   try {
     const user = await User.findOne({ id: req.session.passport.user });
-    const transactions = await Transaction.find({ username: user.username });
+    const startDate = moment().subtract(30, 'days').startOf('day').toDate();
+    const endDate = moment().endOf('day').toDate();
+    const transactions = await Transaction.find({ 
+      username: user.username, 
+      date: { $gte: startDate, $lte: endDate } 
+    }).sort({ date: -1 });
     res.render("index", { title: "Home", user, transactions }); // Pass both user and transactions data to the view
   } catch (error) {
     console.error('Error fetching data:', error);
