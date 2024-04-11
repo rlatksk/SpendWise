@@ -94,6 +94,22 @@
     }
 
     function updateTransactionsList(transactions) {
+      let totalTransactions = transactions.length;
+      let totalIncome = 0;
+      let totalExpense = 0;
+
+      transactions.forEach(function (transaction) {
+          if (transaction.type === 'income') {
+              totalIncome += transaction.amount;
+          } else {
+              totalExpense -= transaction.amount;
+          }
+      });
+      
+      $(".total-transactions h3").text(totalTransactions);
+      $(".total-income h3").text("$" + totalIncome.toFixed(2));
+      $(".total-expense h3").text("$" + totalExpense.toFixed(2));
+
       $("#transactions tbody").empty();
 
       transactions.forEach(function (transaction) {
