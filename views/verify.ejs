@@ -1,34 +1,46 @@
 <div class="full-height">
-    <div
-  style="
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  "
->
-  <% if (messages.error) {%>
   <div
     style="
-      position: absolute;
-      top: 0;
-      width: 100%;
-      text-align: center;
-      background-color: #f8d7da;
-      color: #721c24;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     "
   >
-    <%= messages.error %>
+    <% if (messages.error) { %>
+    <div
+      style="
+        position: absolute;
+        top: 0;
+        width: 100%;
+        text-align: center;
+        background-color: #f8d7da;
+        color: #721c24;
+      "
+    >
+      <%= messages.error %>
+    </div>
+    <% } %>
+    <% if (messages.success) { %>
+    <div
+      style="
+        position: absolute;
+        top: 0;
+        width: 100%;
+        text-align: center;
+        background-color: #d4edda;
+        color: #155724;
+      "
+    >
+      <%= messages.success %>
+    </div>
+    <% } %>
+    <div class="register__div">
+      <h1>Verify Email!</h1>
+      <form action="/verify" method="POST" class="register__form">
+        <input type="text" name="code" placeholder="Enter your email!" required>
+        <button type="submit" class="register__button">Verify</button>
+      </form>
+    </div>
   </div>
-  <% } %>
-  <div class="register__div">
-    <h1>Verify Email!</h1>
-    <form action="/verify" method="POST" class="register__form">
-        <input type="text" name="code" placeholder="Enter your verification code" required>
-        <button type="submit" class="register__button">Register</button>
-    </form>
-      </div>
-    </form>
-  </div>
-</div>
 </div>

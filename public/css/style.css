@@ -586,3 +586,8 @@ input[type="password"] {
   align-items: center;
   height: 78vh;
 }
+
+.forgot__password__links {
+  text-align: right;
+  margin-bottom: 10px;
+}

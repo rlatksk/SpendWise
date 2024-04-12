@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const flash = require("express-flash");
 const session = require("express-session");
+const crypto = require("crypto");
 const passport = require("passport");
 const methodOverride = require("method-override");
 const bcrypt = require("bcrypt");
@@ -24,6 +25,7 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 const initializePassport = require("../../config/passport-config");
+const { toUSVString } = require("util");
 
 function checkNotAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
@@ -38,15 +40,15 @@ initializePassport(
   (id) => User.findOne({ id: id })
 );
 
-async function sendVerificationEmail(email, username, verificationCode) {
-  let transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
+let transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USERNAME,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 
+async function sendVerificationEmail(email, username, verificationCode) {
   let mailOptions = {
     from: process.env.EMAIL_USERNAME,
     to: email,
@@ -96,8 +98,10 @@ router.post('/login', function(req, res, next) {
 
 router.post("/register", checkNotAuthenticated, async (req, res) => {
   try {
+    req.flash('form', req.body);
     req.body.username = req.body.username.toLowerCase();
     const existingUserEmail = await User.findOne({ email: req.body.email });
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if(existingUserEmail){
       req.flash("error", "Email already been used!");
       return res.redirect("/register");
@@ -109,6 +113,10 @@ router.post("/register", checkNotAuthenticated, async (req, res) => {
     }
     if(req.body.password !== req.body.confirmPassword){
       req.flash("error", "Passwords do not match!");
+      return res.redirect("/register");
+    }
+    if (!passwordRegex.test(req.body.password)) {
+      req.flash("error", "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
       return res.redirect("/register");
     }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -129,6 +137,71 @@ router.post("/register", checkNotAuthenticated, async (req, res) => {
     console.log(err);
     res.redirect("/register");
   }
+});
+
+router.post("/forgotPassword", async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email: email });
+
+  if (!user) {
+    req.flash('error', 'Password reset token is invalid or has expired.');
+    return res.redirect('/forgotPassword');
+  }
+
+  const token = crypto.randomBytes(20).toString('hex');
+  user.resetPasswordToken = token;
+  user.resetPasswordExpires = Date.now() + 7* 24 * 60 * 60 * 1000;
+  await user.save();
+
+  const mailOptions = {
+    from: process.env.EMAIL_USERNAME,
+    to: user.email,
+    subject: 'Password Reset',
+    text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\nPlease click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\http://${req.headers.host}/resetPassword?token=${token}\n\nIf you did not request this, please ignore this email and your password will remain unchanged.\n`,
+  }
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Password reset email sent.');
+    req.flash('info', 'An e-mail has been sent to ' + email + ' with further instructions.');
+    res.redirect('/forgotPassword');
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.redirect('/forgotPassword');
+  }
+});
+
+router.post("/resetPassword/:token", async (req, res) => {
+  const { token } = req.params;
+  const { password, confirmPassword } = req.body;
+
+  console.log('Token:', token);
+  console.log('Password:', password);
+  console.log('Confirm Password:', confirmPassword);
+
+  if (password !== confirmPassword) {
+    req.flash('error', 'Passwords do not match.');
+    return res.redirect('/resetPassword');
+  }
+
+  const user = await User.findOne({ 
+    resetPasswordToken: token, 
+    resetPasswordExpires: { $gt: new Date() } 
+  });
+
+  if (!user) {
+    req.flash('error', 'Password reset token is invalid or has expired.');
+    return res.redirect('/forgotPassword');
+  }
+
+  user.password = await bcrypt.hash(password, 10);
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save();
+
+  req.flash('success', 'Password has been reset!');
+  res.redirect('/login');
 });
 
 router.post("/verify", async (req, res) => {
