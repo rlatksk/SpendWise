@@ -25,8 +25,8 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 const initializePassport = require("../../config/passport-config");
-const { toUSVString } = require("util");
 
+// Middleware to redirect authenticated users to home
 function checkNotAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return res.redirect("/");
@@ -34,12 +34,14 @@ function checkNotAuthenticated(req, res, next) {
   next();
 }
 
+// Passport strategy
 initializePassport(
   passport,
   (username) => User.findOne({ username: username }),
   (id) => User.findOne({ id: id })
 );
 
+// Nodemailer transporter for Gmail
 let transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -48,6 +50,7 @@ let transporter = nodemailer.createTransport({
   },
 });
 
+// Function to send a verification email to a user
 async function sendVerificationEmail(email, username, verificationCode) {
   let mailOptions = {
     from: process.env.EMAIL_USERNAME,
@@ -66,6 +69,7 @@ async function sendVerificationEmail(email, username, verificationCode) {
   return verificationCode;
 }
 
+// Login route: Authenticates the user and redirects based on verification status
 router.post('/login', function(req, res, next) {
   req.body.username = req.body.username.toLowerCase();
   passport.authenticate('local', async function(err, user, info) {
@@ -96,6 +100,7 @@ router.post('/login', function(req, res, next) {
   })(req, res, next);
 });
 
+// Register route: Registers a new user and sends a verification email
 router.post("/register", checkNotAuthenticated, async (req, res) => {
   try {
     req.flash('form', req.body);
@@ -139,6 +144,7 @@ router.post("/register", checkNotAuthenticated, async (req, res) => {
   }
 });
 
+// Forgot Password route: Sends an email to the user with a password reset token
 router.post("/forgotPassword", async (req, res) => {
   const { email } = req.body;
 
@@ -172,13 +178,10 @@ router.post("/forgotPassword", async (req, res) => {
   }
 });
 
+// Reset Password route: Resets the user's password if the provided token is valid
 router.post("/resetPassword/:token", async (req, res) => {
   const { token } = req.params;
   const { password, confirmPassword } = req.body;
-
-  console.log('Token:', token);
-  console.log('Password:', password);
-  console.log('Confirm Password:', confirmPassword);
 
   if (password !== confirmPassword) {
     req.flash('error', 'Passwords do not match.');
@@ -204,6 +207,7 @@ router.post("/resetPassword/:token", async (req, res) => {
   res.redirect('/login');
 });
 
+// Verify route: Verifies the user's email using a verification code
 router.post("/verify", async (req, res) => {
   const { code } = req.body;
 
@@ -230,6 +234,7 @@ router.post("/verify", async (req, res) => {
   }
 });
 
+// Logout route: Logs out the user and destroys the session
 router.delete("/logout", (req, res) => {
   req.session.destroy(function (err) {
     if (err) {
