@@ -226,7 +226,7 @@ router.get("/login", checkNotAuthenticated, (req, res) => {
 });
 
 router.get("/register", checkNotAuthenticated, (req, res) => {
-  res.render("register.ejs", { title: "Register", showHeader: false);
+  res.render("register.ejs", { title: "Register", showHeader: false});
 });
 
 router.get("/verify", (req, res) => {
