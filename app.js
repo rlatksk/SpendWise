@@ -34,6 +34,8 @@ app.set('view engine', 'ejs');
 app.use('/', require('./server/routes/main'));
 app.use('/auth', require('./server/routes/auth'));
 
+app.get('/favicon.ico', (req, res) => res.status(204)); //Just to prevent chart.js console error on favicon.ico
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`)
 })
