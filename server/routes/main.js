@@ -208,17 +208,33 @@ router.get("/transactions/range", checkAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/resetPassword", async (req, res) => {
+  const { token } = req.query;
+  const user = await User.findOne({ 
+    resetPasswordToken: token, 
+    resetPasswordExpires: { $gt: new Date() }
+  });
+  if (!user) {
+    req.flash('error', 'Password reset token is invalid or has expired.');
+    return res.redirect('/forgotPassword');
+  }
+  return res.render('resetPassword', { token, showHeader: false, title: "Reset Password" });
+});
 
 router.get("/login", checkNotAuthenticated, (req, res) => {
   res.render("login", { title: "Login", showHeader: false });
 });
 
 router.get("/register", checkNotAuthenticated, (req, res) => {
-  res.render("register.ejs", { title: "Register", showHeader: false});
+  res.render("register.ejs", { title: "Register", showHeader: false);
 });
 
 router.get("/verify", (req, res) => {
   res.render("verify", { title: "Verify", showHeader: false });
+});
+
+router.get("/forgotPassword", (req, res) => {
+  res.render("forgotPassword", { title: "Forgot Password", showHeader: false });
 });
 
 module.exports = router;
