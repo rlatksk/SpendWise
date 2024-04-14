@@ -182,6 +182,7 @@ router.post("/forgotPassword", async (req, res) => {
 router.post("/resetPassword/:token", async (req, res) => {
   const { token } = req.params;
   const { password, confirmPassword } = req.body;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   if (password !== confirmPassword) {
     req.flash('error', 'Passwords do not match.');
@@ -196,6 +197,11 @@ router.post("/resetPassword/:token", async (req, res) => {
   if (!user) {
     req.flash('error', 'Password reset token is invalid or has expired.');
     return res.redirect('/forgotPassword');
+  }
+
+  if (!passwordRegex.test(req.body.password)) {
+    req.flash("error", "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
+    return res.redirect("/register");
   }
 
   user.password = await bcrypt.hash(password, 10);
