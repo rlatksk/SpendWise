@@ -261,6 +261,21 @@ textarea {
   background-color: var(--darker-blue);
 }
 
+.monthly-indicator {
+  margin: auto;
+  width: 50%;
+  border-radius: 20px;
+  color: var(--black);
+  background-color: var(--white);
+  text-align: center;
+  padding: 2px 10px 2px 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.monthly-indicator h3{
+  font-size: calc(var(--font-size-md) * 0.9);
+}
+
 .charts{
   display: flex;
   flex-direction: column;
