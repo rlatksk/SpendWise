@@ -68,6 +68,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }]
         },
         options: {
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: true
@@ -78,33 +83,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to generate data for doughnut chart (Transaction Types)
     function generateTypeData(transactions) {
-        let incomeCount = 0;
-        let expenseCount = 0;
-
+        let totalIncome = 0;
+        let totalExpense = 0;
+    
         transactions.forEach(transaction => {
             if (transaction.type === 'income') {
-                incomeCount++;
+                totalIncome += transaction.amount;
             } else {
-                expenseCount++;
+                totalExpense += transaction.amount;
             }
         });
-
-        return [incomeCount, expenseCount];
-    }
+    
+        return [totalIncome, totalExpense];
+    }    
 
     // Function to generate data for doughnut chart (Categories)
     function generateCategoryData(transactions) {
-        const categoryCounts = {};
-        const currentDate = new Date();
-
+        const categoryAmounts = {};
+    
         transactions.forEach(transaction => {
-            const transactionDate = new Date(transaction.date);
+            if (transaction.type === 'expense') {
                 const category = transaction.category.toLowerCase();
-                categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+                // If the category doesn't exist yet, initialize it with the transaction amount
+                if (!categoryAmounts[category]) {
+                    categoryAmounts[category] = transaction.amount;
+                } else {
+                    // If the category exists, add the transaction amount to its total
+                    categoryAmounts[category] += transaction.amount;
+                }
+            }
         });
-
-        return categoryCounts;
-    }
+    
+        return categoryAmounts;
+    }    
 
     // Function to generate random background colors for doughnut chart
     function generateRandomColors(count) {

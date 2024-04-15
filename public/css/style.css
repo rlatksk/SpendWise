@@ -11,13 +11,14 @@
   --grey: #DBE2EF;
   --lighter-blue: #3F72AF;
   --darker-blue: #112D4E;
+  --income: rgb(59, 158, 158);
+  --expense: rgb(203, 76, 103);
   --font-size-base: 1rem;
   --font-size-md: clamp(1.25rem, 0.61vw + 1.1rem, 1.58rem);
   --font-size-lg: clamp(1.56rem, 1vw + 1.31rem, 2.11rem);
   --font-size-xl: clamp(2.44rem, 2.38vw + 1.85rem, 3.75rem);
   --border-radius: 10px;
 }
-
 
 body {
   font-family: 'Poppins', sans-serif;
@@ -221,6 +222,8 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 200px;
+  overflow: auto;
 }
 
 .home-header-wallet h3,
@@ -263,8 +266,13 @@ textarea {
   background-color: var(--darker-blue);
 }
 
+.home-middle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .monthly-indicator {
-  margin: auto;
   width: 50%;
   border-radius: 20px;
   color: var(--black);
@@ -276,6 +284,50 @@ textarea {
 
 .monthly-indicator h3{
   font-size: calc(var(--font-size-md) * 0.9);
+}
+
+.monthly-income,
+.monthly-expense {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.monthly-income p {
+  background-color: rgb(96, 214, 214);
+}
+
+.monthly-income h3 {
+  background-color: var(--income);
+}
+
+.monthly-expense p {
+  background-color: rgb(255, 143, 167);
+}
+
+.monthly-expense h3 {
+  background-color: var(--expense);
+}
+
+
+.monthly-income p,
+.monthly-expense p {
+  margin-bottom: 0;
+  border-radius: 20px 20px 0px 0px;
+  padding: 10px;
+  font-weight: bold;  
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.monthly-income h3,
+.monthly-expense h3 {
+  overflow: auto;
+  margin-top: 0;
+  color: var(--white);
+  border-radius: 0px 0px 20px 20px;
+  padding: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .charts{
