@@ -2,12 +2,10 @@
 
 :root {
   --black: #222831;
-  --gray-light: #E4E4E4;
   --red: #b30000;
   --white: #EEEEEE;
   --light-blue: #76ABAE;
   --lighter-black: #31363F;
-  --white: #F9F7F7;
   --grey: #DBE2EF;
   --lighter-blue: #3F72AF;
   --darker-blue: #112D4E;
@@ -53,7 +51,7 @@ textarea {
 .btn {
   background-color: var(--black);
   border: none;
-  color: white; 
+  color: var(--white); 
   padding: 16px 32px;
   text-decoration: none;
   margin: 4px 2px; 
@@ -145,7 +143,7 @@ textarea {
 }
 
 .header__nav ul a.active {
-  color: #7E7E7E;
+  color: var(--grey);
 }
 
 .header__nav ul a:hover {
@@ -183,7 +181,7 @@ textarea {
 
 
 .home-header-left h3 {
-  color: #22283197;
+  color: var(--black);
   margin: 0;
 }
 
@@ -208,7 +206,7 @@ textarea {
 
 .home-header-add-transaction a{
   text-decoration: none;
-  color: white;
+  color: var(--white);
   background-color: var(--darker-blue);
   padding: 10px 20px;
   border-radius: 20px;
@@ -362,7 +360,7 @@ textarea {
 .category-doughnut-chart canvas,
 .line-chart canvas{
   margin-top: 0;
-  background-color: rgba(255, 255, 255, 0.669);
+  background-color: var(--white);
   padding: 40px;
   border-radius: 0px 0px 20px 20px;
 }
@@ -400,7 +398,7 @@ textarea {
 }
 
 .transactions-nav .select-date-range button {
-  color: white;
+  color: var(--white);
   border-radius: 20px;
   background-color: var(--lighter-black);
   padding: 10px 20px;
@@ -474,7 +472,7 @@ textarea {
   cursor: pointer;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   background-color: var(--lighter-black);
-  color: white;
+  color: var(--white);
 }
 
 .download-btn{
@@ -547,7 +545,7 @@ textarea {
 } */
 
 .register__form {
-  background-color: #ffffff;
+  background-color: var(--white);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
@@ -571,7 +569,7 @@ input[type="email"],
 input[type="password"] {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--grey);
   border-radius: 4px;
 }
 
@@ -579,14 +577,14 @@ input[type="password"] {
   width: 100%;
   padding: 10px;
   background-color: #112D4E;
-  color: #ffffff;
+  color: var(--white);
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .register__button:hover {
-  background-color: #3F72AF;
+  background-color: var(--lighter-blue);
 }
 
 .register__form__links{
@@ -602,7 +600,7 @@ input[type="password"] {
 }
 
 .register__form a {
-  color: #3F72AF;
+  color: var(--lighter-blue);
   text-decoration: none;
   margin: 0;
 }
@@ -623,8 +621,8 @@ input[type="password"] {
 }
 
 .logout__button {
-  background-color: #112D4E;
-  color: #ffffff;
+  background-color: var(--black);
+  color: var(--white);
   border: none;
   padding: 10px 20px;
   text-align: center;
@@ -638,8 +636,8 @@ input[type="password"] {
 }
 
 .logout__button:hover {
-  background-color: #3F72AF; 
-  color: white; 
+  background-color: var(--darker-blue);
+  color: var(--white); 
 }
 
 .footer {
