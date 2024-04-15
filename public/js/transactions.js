@@ -23,16 +23,18 @@ $(document).ready(function () {
           ? -transaction.amount
           : transaction.amount;
       var date = new Date(transaction.date).toISOString().slice(0, 10);
+      var formattedAmount = "$" + amount.toFixed(2);
       $("#transactions-table")
         .DataTable()
         .row.add([
           date,
-          amount.toFixed(2),
+          formattedAmount,
           transaction.category,
           transaction.notes,
           `<a onclick="editTransaction('${transaction._id}')">Edit</a> <a onclick="deleteTransaction('${transaction._id}')">Delete</a>`,
         ]);
     });
+    
 
     $("#transactions-table").DataTable().draw();
 

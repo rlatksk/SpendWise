@@ -258,6 +258,7 @@ textarea {
   transition: background-color 0.3s ease;
   width: 100%;
   margin-top: 0;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .add-transaction-btn:hover {
@@ -344,6 +345,7 @@ textarea {
 .category-doughnut-chart,
 .line-chart{
   text-align: center;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .type-doughnut-chart h2,
