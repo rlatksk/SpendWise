@@ -1,3 +1,7 @@
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
 function addIncome() {
   Swal.fire({
     title: "Add Income",
@@ -11,63 +15,63 @@ function addIncome() {
         <label for="swal-input4">Date</label>
         <input id="swal-input4" type="date" class="swal2-input" placeholder="Date">
         </div>`,
-        footer: "If the date field is empty, transactions will be listed with current date",
-        showCancelButton: true,
-        confirmButtonText: "Add",
-        preConfirm: async () => {
-            const income = document.getElementById('swal-input1').value;
-            const category = document.getElementById('swal-input2').value;
-            const notes = document.getElementById('swal-input3').value;
-            const dateInput = document.getElementById('swal-input4');
-            let date = dateInput.value ? new Date(dateInput.value).toISOString() : Date.now();
+    footer: "If the date field is empty, transactions will be listed with the current date",
+    showCancelButton: true,
+    confirmButtonText: "Add",
+    preConfirm: async () => {
+      const income = document.getElementById('swal-input1').value;
+      const category = capitalizeFirstLetter(document.getElementById('swal-input2').value);
+      const notes = document.getElementById('swal-input3').value;
+      const dateInput = document.getElementById('swal-input4');
+      let date = dateInput.value ? new Date(dateInput.value).toISOString() : Date.now();
 
-            if (!income || !category) {
-                Swal.showValidationMessage('Income Amount and Category fields cannot be empty');
-                return;
-              }
+      if (!income || !category) {
+        Swal.showValidationMessage('Income Amount and Category fields cannot be empty');
+        return;
+      }
 
-            if(!dateInput){
-              dateInput = Date.now();
-            }
-            
-            // POST request
-            return fetch('/api/insertTransaction', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    type: 'income',
-                    category: category, 
-                    notes: notes,
-                    amount: income,
-                    date: date
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response was not ok.');
-            })
-            .then(data => {
-                console.log(data); 
-                Swal.fire({
-                    title: "Income Added",
-                    icon: "success",
-                    showConfirmButton: false,
-                    allowOutsideClick: false
-                  });
-                setTimeout(() => {
-                    location.reload();
-                }, 1500);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire("Error", "Failed to add income", "error");
-            });
-        }
-    })
+      if (!dateInput) {
+        dateInput = Date.now();
+      }
+
+      // POST request
+      return fetch('/api/insertTransaction', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          type: 'income',
+          category: category,
+          notes: notes,
+          amount: income,
+          date: date
+        })
+      })
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error('Network response was not ok.');
+        })
+        .then(data => {
+          console.log(data);
+          Swal.fire({
+            title: "Income Added",
+            icon: "success",
+            showConfirmButton: false,
+            allowOutsideClick: false
+          });
+          setTimeout(() => {
+            location.reload();
+          }, 1500);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          Swal.fire("Error", "Failed to add income", "error");
+        });
+    }
+  });
 }
 
 function addExpense() {
@@ -83,60 +87,61 @@ function addExpense() {
         <label for="swal-input4">Date</label>
         <input id="swal-input4" type="date" class="swal2-input" placeholder="Date">
         </div>`,
-        footer: "If the date field is empty, transactions will be listed with current date",
-        showCancelButton: true,
-        confirmButtonText: "Add",
-        preConfirm: async () => {
-            const expense = document.getElementById('swal-input1').value;
-            const category = document.getElementById('swal-input2').value;
-            const notes = document.getElementById('swal-input3').value;
-            const dateInput = document.getElementById('swal-input4');
-            let date = dateInput.value ? new Date(dateInput.value).toISOString() : Date.now();
+    footer: "If the date field is empty, transactions will be listed with the current date",
+    showCancelButton: true,
+    confirmButtonText: "Add",
+    preConfirm: async () => {
+      const expense = document.getElementById('swal-input1').value;
+      const category = capitalizeFirstLetter(document.getElementById('swal-input2').value);
+      const notes = document.getElementById('swal-input3').value;
+      const dateInput = document.getElementById('swal-input4');
+      let date = dateInput.value ? new Date(dateInput.value).toISOString() : Date.now();
 
-            if (!expense || !category) {
-                Swal.showValidationMessage('Expense Amount and Category fields cannot be empty');
-                return;
-              }
-            
-            // POST request
-            return fetch('/api/insertTransaction', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    type: 'expense',
-                    category: category, 
-                    notes: notes,
-                    amount: expense,
-                    date: date
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response was not ok.');
-            })
-            .then(data => {
-                console.log(data); 
-                Swal.fire({
-                    title: "Expense Added",
-                    icon: "success",
-                    showConfirmButton: false,
-                    allowOutsideClick: false
-                  });
-                setTimeout(() => {
-                    location.reload();
-                }, 1500);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire("Error", "Failed to add expense", "error");
-            });
-        }
-    })
+      if (!expense || !category) {
+        Swal.showValidationMessage('Expense Amount and Category fields cannot be empty');
+        return;
+      }
+
+      // POST request
+      return fetch('/api/insertTransaction', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          type: 'expense',
+          category: category,
+          notes: notes,
+          amount: expense,
+          date: date
+        })
+      })
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error('Network response was not ok.');
+        })
+        .then(data => {
+          console.log(data);
+          Swal.fire({
+            title: "Expense Added",
+            icon: "success",
+            showConfirmButton: false,
+            allowOutsideClick: false
+          });
+          setTimeout(() => {
+            location.reload();
+          }, 1500);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          Swal.fire("Error", "Failed to add expense", "error");
+        });
+    }
+  });
 }
+
 
 function deleteTransaction(transactionId) {
   Swal.fire({
@@ -231,7 +236,7 @@ async function editTransaction(transactionId) {
         confirmButtonText: "Update",
         preConfirm: async () => {
           const amount = document.getElementById("swal-input1").value;
-          const category = document.getElementById("swal-input2").value;
+          const category = capitalizeFirstLetter(document.getElementById("swal-input2").value);
           const type = document.getElementById("swal-input3").value;
           const note = document.getElementById("swal-input4").value;
           const date = document.getElementById("swal-input5").value;
