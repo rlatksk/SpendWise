@@ -103,12 +103,11 @@ document.addEventListener("DOMContentLoaded", function () {
     
         transactions.forEach(transaction => {
             if (transaction.type === 'expense') {
+                // Uses toLowerCase because beforehand the categories weren't automatically capitaliezd
                 const category = transaction.category.toLowerCase();
-                // If the category doesn't exist yet, initialize it with the transaction amount
                 if (!categoryAmounts[category]) {
                     categoryAmounts[category] = transaction.amount;
                 } else {
-                    // If the category exists, add the transaction amount to its total
                     categoryAmounts[category] += transaction.amount;
                 }
             }
