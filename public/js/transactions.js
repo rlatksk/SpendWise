@@ -157,15 +157,15 @@ $(document).ready(function () {
     });
   }
 
-  // Function to filter transactions by type (income or expense)
+  // Function to filter transactions by type (income or expense), this part is 100% ChatGPT I don't know how this works
   $("#filter-income").click(function () {
     var table = $("#transactions-table").DataTable();
-    table.column(1).search("^[^\\-]", true, false).draw();
-  });
-
+    table.column(1).search("^\\$(?!\\-)", true, false).draw();
+  });  
+  
   $("#filter-expense").click(function () {
     var table = $("#transactions-table").DataTable();
-    table.column(1).search("^\\-", true, false).draw();
+    table.column(1).search("^\\$\\-", true, false).draw();
   });
 
   $("#filter-reset").click(function () {
