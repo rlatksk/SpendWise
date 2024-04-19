@@ -49,6 +49,10 @@ router.get('/transactions', checkAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/converter", (req,res) => {
+  res.render("converter", { title: "Converter" });
+});
+
 router.get("/api/transactions/csv", checkAuthenticated, async (req, res) => {
   try {
     const user = await User.findOne({ id: req.session.passport.user });

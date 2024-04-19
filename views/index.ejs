@@ -1,9 +1,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="/js/chart.js"></script>
 
-
 <%# This is the home page where the user can see their statistics and charts %>
-
 <%# This is for passing server-side to client-side %>
 <% const transactionsJSON = JSON.stringify(transactions); %>
 
@@ -52,6 +50,7 @@
     </div>
 </form>
 
+<%# This part just shows the user's total monthly income and expense%>
 <div class="home-middle">
     <div class="monthly-indicator">
         <h3>Here are your monthly statistics!</h3>

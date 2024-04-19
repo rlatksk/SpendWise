@@ -1,0 +1,40 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/converter.js"></script>
+
+<div class="currency-converter-outer">
+  <div class="currency-converter">
+    <h2>Currency Converter</h2>
+
+    <div class="currency-converter-data">
+      <div class="currency-converter-top">
+        <div class="converter-left">
+          <input type="number" class="form-input" id="number" placeholder="0"/>
+        </div>
+        <div class="converter-right">
+          <div class="select">
+            <select
+              name="currency"
+              class="currency"
+              onchange="updatevalue()"
+            ></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="currency-converter-bottom">
+        <div class="converter-left">
+          <input type="number" class="form-input" id="output" placeholder="0" disabled/>
+        </div>
+        <div class="converter-right">
+          <div class="select">
+            <select
+              name="currency"
+              class="currency"
+              onchange="updatevalue()"
+            ></select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
