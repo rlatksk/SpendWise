@@ -100,6 +100,8 @@ router.post('/api/deleteAccount', checkAuthenticated, async (req, res) => {
       return res.status(401).json({ message: 'Invalid password' });
     }
 
+    const transactions = await Transaction.deleteMany({ username: user.username });
+
     await User.deleteOne({ _id: user._id });
     // Log out the user
     req.logout(function(err) {
