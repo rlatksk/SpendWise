@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Parser } = require('json2csv');
 const moment = require('moment');
+const bcrypt = require('bcrypt');
 const Transaction = require('../../db-schema/Transaction')
 const User = require("../../db-schema/User");
 const { insertTransaction, deleteTransaction, updateTransactionAmount, updateTransactionCategory, updateTransactionType, updateTransactionNote, updateTransactionDate  } = require('../../functions/transactionsFunction');
@@ -52,6 +53,34 @@ router.get('/transactions', checkAuthenticated, async (req, res) => {
 router.get("/converter", (req,res) => {
   res.render("converter", { title: "Converter" });
 });
+
+router.get("/profile", checkAuthenticated, async (req, res) => {
+  const user = await User.findOne({ id: req.session.passport.user });
+  res.render("profile", { title: "Profile", user });
+});
+
+router.post("/api/changeEmail", checkAuthenticated, async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ id: req.session.passport.user });
+
+    // Verify the provided password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (isPasswordValid) {
+      // Update the user's email
+      user.email = email;
+      await user.save();
+      res.status(200).json({ message: "Email updated successfully" });
+    } else {
+      res.status(401).json({ message: "Invalid password" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 
 router.get("/api/transactions/csv", checkAuthenticated, async (req, res) => {
   try {
