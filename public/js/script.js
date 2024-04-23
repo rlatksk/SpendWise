@@ -298,7 +298,7 @@ async function editTransaction(transactionId) {
     }
   }
 
-function changeEmail(username) {
+function changeEmail(username, oldEmail) {
   Swal.fire({
     title: "Change Email",
     html: `
@@ -313,10 +313,14 @@ function changeEmail(username) {
     showCancelButton: true,
     preConfirm: () => {
       const newEmail = document.getElementById('swal-input1').value;
-      const password = document.getElementById('swal-input2').value
+      const password = document.getElementById('swal-input2').value;
   
       if (!newEmail || !password) {
         Swal.showValidationMessage("Please enter email and password");
+      }
+
+      if (newEmail.toLowerCase() === oldEmail.toLowerCase()) {
+        Swal.showValidationMessage("New email cannot be the same as old email");
       }
   
       return { newEmail, password };
@@ -331,7 +335,7 @@ function changeEmail(username) {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ email: newEmail, password }),
+            body: JSON.stringify({ email: newEmail, password, username }),
           });
   
           if (response.ok) {
@@ -346,12 +350,70 @@ function changeEmail(username) {
             }, 1500);
           } else {
             const data = await response.json();
-            Swal.fire("Error", data.message, "error");
+            Swal.fire("Email is not valid", data.message, "error");
           }
         } catch (err) {
           console.error(err);
           Swal.fire("Error", "An unexpected error occurred", "error");
         }
       }
-    });
-  }
+  });
+}
+
+function deleteAccount(userId, username) {
+  Swal.fire({
+    title: "Delete Account",
+    html: `
+      <div style="display: flex; flex-direction: column; justify-content: center;">
+        <label for="swal-input2">Password</label>
+        <input id="swal-input1" type="password" class="swal2-input" placeholder="Enter your password">
+      </div>
+    `,
+    footer: "This action cannot be undone",
+    confirmButtonText: "Confirm",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    preConfirm: () => {
+      const enteredPassword = Swal.getPopup().querySelector("#swal-input1").value;
+
+      if (!enteredPassword) {
+        Swal.showValidationMessage("Please enter your username and password");
+      }
+
+      return {enteredPassword };
+    },
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      const { enteredPassword } = result.value;
+
+      try {
+        const response = await fetch("/api/deleteAccount", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId, username: username, password: enteredPassword }),
+        });
+
+        if (response.ok) {
+          Swal.fire({
+            title: "We are sad to see you go",
+            icon: "success",
+            showConfirmButton: false,
+            allowOutsideClick: false,
+          });
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 3000);
+        } else {
+          const data = await response.json();
+          Swal.fire("Credential Mismatch", data.message, "error");
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "An unexpected error occurred", "error");
+      }
+    }
+  });
+}
+

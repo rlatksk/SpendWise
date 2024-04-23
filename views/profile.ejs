@@ -7,7 +7,7 @@
     <div id="row">
         <h2>Email</h2> 
         <p><%=user.email%></p>
-        <button onclick="changeEmail('<%=user.username%>')">Change Email</button>
+        <button onclick="changeEmail('<%=user.username%>', '<%=user.email%>')">Change Email</button>
     </div>
     <div id="row">
         <h2>Password</h2> 
@@ -15,5 +15,8 @@
         <a href="/forgotPassword">
             <button>Change Password</button>
         </a>
-    </div>          
+    </div>      
+    <div id="row">
+        <button onclick="deleteAccount('<%=user._id%>', '<%=user.username%>')" style="color: red; margin-top: 80px; font-weight: bolder;">Delete Account</button>
+    </div>              
 </div>

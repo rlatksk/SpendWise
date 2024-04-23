@@ -77,7 +77,51 @@ router.post("/api/changeEmail", checkAuthenticated, async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Email already taken" });
+  }
+});
+
+router.post('/api/deleteAccount', checkAuthenticated, async (req, res) => {
+  try {
+    const { userId, username, password } = req.body;
+    const user = await User.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.username !== username) {
+      return res.status(401).json({ message: 'Invalid username' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid password' });
+    }
+
+    await User.deleteOne({ _id: user._id });
+    // Log out the user
+    req.logout(function(err) {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal server error' });
+      }
+
+      // Clear the session data
+      req.session.destroy(function(err) {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ message: 'Internal server error' });
+        }
+
+        // Account deleted successfully, user logged out
+        res.status(200).json({ message: 'Account deleted successfully' });
+      });
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
