@@ -297,4 +297,61 @@ async function editTransaction(transactionId) {
       Swal.fire("Error", "Failed to fetch transaction details", "error");
     }
   }
+
+function changeEmail(username) {
+  Swal.fire({
+    title: "Change Email",
+    html: `
+      <div style="display: flex; flex-direction: column;">
+        <label for="swal-input1">New Email</label>
+        <input id="swal-input1" type="email" id="newEmail" class="swal2-input" placeholder="Enter new email">
+        <label for="swal-input2">Password</label>
+        <input id="swal-input2" type="password" id="password" class="swal2-input" placeholder="Enter password">
+        </div>
+      `,
+    confirmButtonText: "Change Email",
+    showCancelButton: true,
+    preConfirm: () => {
+      const newEmail = document.getElementById('swal-input1').value;
+      const password = document.getElementById('swal-input2').value
   
+      if (!newEmail || !password) {
+        Swal.showValidationMessage("Please enter email and password");
+      }
+  
+      return { newEmail, password };
+      },
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const { newEmail, password } = result.value;
+  
+        try {
+          const response = await fetch("/api/changeEmail", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email: newEmail, password }),
+          });
+  
+          if (response.ok) {
+            Swal.fire({
+              title: "Email Changed",
+              icon: "success",
+              showConfirmButton: false,
+              allowOutsideClick: false,
+            });
+            setTimeout(() => {
+              location.reload();
+            }, 1500);
+          } else {
+            const data = await response.json();
+            Swal.fire("Error", data.message, "error");
+          }
+        } catch (err) {
+          console.error(err);
+          Swal.fire("Error", "An unexpected error occurred", "error");
+        }
+      }
+    });
+  }
