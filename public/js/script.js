@@ -1,7 +1,9 @@
+//function to capitalize data value
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 
+//add income transaction function
 function addIncome() {
   Swal.fire({
     title: "Add Income",
@@ -74,6 +76,7 @@ function addIncome() {
   });
 }
 
+//add expense transaction function
 function addExpense() {
   Swal.fire({
     title: "Add Expense",
@@ -142,7 +145,7 @@ function addExpense() {
   });
 }
 
-
+//delete transaction function
 function deleteTransaction(transactionId) {
   Swal.fire({
     title: "Delete Transaction?",
@@ -164,7 +167,6 @@ function deleteTransaction(transactionId) {
         if (response.ok) {
           return { success: true };
         } else if (response.status === 404) {
-          // Handle the 404 case here
           return {
             success: true,
             message: "Transaction not found, but deleted from the database",
@@ -203,6 +205,7 @@ function deleteTransaction(transactionId) {
     });
 }
 
+//edit transaction function
 async function editTransaction(transactionId) {
   try {
     const response = await fetch(`/api/transactions/${transactionId}`);
@@ -298,6 +301,7 @@ async function editTransaction(transactionId) {
     }
   }
 
+//change email function
 function changeEmail(username, oldEmail) {
   Swal.fire({
     title: "Change Email",
@@ -360,6 +364,7 @@ function changeEmail(username, oldEmail) {
   });
 }
 
+//delete account function
 function deleteAccount(userId, username) {
   Swal.fire({
     title: "Delete Account",
