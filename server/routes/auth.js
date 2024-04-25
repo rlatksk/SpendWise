@@ -157,7 +157,7 @@ router.post("/forgotPassword", async (req, res) => {
 
   const token = crypto.randomBytes(20).toString('hex');
   user.resetPasswordToken = token;
-  user.resetPasswordExpires = Date.now() + 7* 24 * 60 * 60 * 1000;
+  user.resetPasswordExpires = Date.now() + 60 * 60 * 1000;
   await user.save();
 
   const mailOptions = {
