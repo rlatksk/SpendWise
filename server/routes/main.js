@@ -54,11 +54,13 @@ router.get("/converter", (req,res) => {
   res.render("converter", { title: "Converter" });
 });
 
+//Profile page router
 router.get("/profile", checkAuthenticated, async (req, res) => {
   const user = await User.findOne({ id: req.session.passport.user });
   res.render("profile", { title: "Profile", user });
 });
 
+//Change email API
 router.post("/api/changeEmail", checkAuthenticated, async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -81,6 +83,7 @@ router.post("/api/changeEmail", checkAuthenticated, async (req, res) => {
   }
 });
 
+//Account Delete API
 router.post('/api/deleteAccount', checkAuthenticated, async (req, res) => {
   try {
     const { userId, username, password } = req.body;
@@ -100,7 +103,7 @@ router.post('/api/deleteAccount', checkAuthenticated, async (req, res) => {
       return res.status(401).json({ message: 'Invalid password' });
     }
 
-    const transactions = await Transaction.deleteMany({ username: user.username });
+    await Transaction.deleteMany({ username: user.username });
 
     await User.deleteOne({ _id: user._id });
     // Log out the user
@@ -116,8 +119,6 @@ router.post('/api/deleteAccount', checkAuthenticated, async (req, res) => {
           console.error(err);
           return res.status(500).json({ message: 'Internal server error' });
         }
-
-        // Account deleted successfully, user logged out
         res.status(200).json({ message: 'Account deleted successfully' });
       });
     });
@@ -153,6 +154,7 @@ router.get("/api/transactions/csv", checkAuthenticated, async (req, res) => {
   }
 });
 
+//fetch transaction details API
 router.get('/api/transactions/:transactionId', checkAuthenticated, async (req, res) => {
   try {
     const transactionId = req.params.transactionId;
@@ -179,6 +181,7 @@ router.get('/api/transactions/:transactionId', checkAuthenticated, async (req, r
   }
 });
 
+//Insert transaction API
 router.post('/api/insertTransaction', checkAuthenticated, async (req, res) => {
   try {
     const user = await User.findOne({ id: req.session.passport.user });
@@ -194,6 +197,7 @@ router.post('/api/insertTransaction', checkAuthenticated, async (req, res) => {
   }
 });
 
+//Transaction delete API
 router.delete('/api/deletetransaction/:transactionId', checkAuthenticated, async (req, res) => {
   try {
     const transactionId = req.params.transactionId;
@@ -205,6 +209,7 @@ router.delete('/api/deletetransaction/:transactionId', checkAuthenticated, async
   }
 });
 
+//Transaction edit API
 router.put('/api/edittransactions/:transactionId', checkAuthenticated, async (req, res) => {
   try {
     const transactionId = req.params.transactionId;
