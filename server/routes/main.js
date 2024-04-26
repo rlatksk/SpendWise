@@ -7,6 +7,7 @@ const Transaction = require('../../db-schema/Transaction')
 const User = require("../../db-schema/User");
 const { insertTransaction, deleteTransaction, updateTransactionAmount, updateTransactionCategory, updateTransactionType, updateTransactionNote, updateTransactionDate  } = require('../../functions/transactionsFunction');
 
+// Middleware or function to check if user is authenticated
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
@@ -14,6 +15,7 @@ function checkAuthenticated(req, res, next) {
   res.redirect("/login")  ;
 }
 
+// Middleware or function to check if user is NOT authenticated
 function checkNotAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return res.redirect("/");
@@ -21,6 +23,7 @@ function checkNotAuthenticated(req, res, next) {
   next();
 }
 
+// Route for rendering home page
 router.get("/", checkAuthenticated, async (req, res) => {
   try {
     const user = await User.findOne({ id: req.session.passport.user });
@@ -37,7 +40,7 @@ router.get("/", checkAuthenticated, async (req, res) => {
   }
 });
 
-
+// Route for rendering transactions page
 router.get('/transactions', checkAuthenticated, async (req, res) => {
   try {
     const user = await User.find({ id: req.session.passport.user });
@@ -50,17 +53,18 @@ router.get('/transactions', checkAuthenticated, async (req, res) => {
   }
 });
 
+// Route for rendering converter page
 router.get("/converter", (req,res) => {
   res.render("converter", { title: "Converter" });
 });
 
-//Profile page router
+// Route for rendering profile page
 router.get("/profile", checkAuthenticated, async (req, res) => {
   const user = await User.findOne({ id: req.session.passport.user });
   res.render("profile", { title: "Profile", user });
 });
 
-//Change email API
+// Route for changing email
 router.post("/api/changeEmail", checkAuthenticated, async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -83,7 +87,7 @@ router.post("/api/changeEmail", checkAuthenticated, async (req, res) => {
   }
 });
 
-//Account Delete API
+// Route for deleting user account
 router.post('/api/deleteAccount', checkAuthenticated, async (req, res) => {
   try {
     const { userId, username, password } = req.body;
@@ -112,7 +116,6 @@ router.post('/api/deleteAccount', checkAuthenticated, async (req, res) => {
         console.error(err);
         return res.status(500).json({ message: 'Internal server error' });
       }
-
       // Clear the session data
       req.session.destroy(function(err) {
         if (err) {
@@ -128,7 +131,7 @@ router.post('/api/deleteAccount', checkAuthenticated, async (req, res) => {
   }
 });
 
-
+// Route for downloading transactions as CSV
 router.get("/api/transactions/csv", checkAuthenticated, async (req, res) => {
   try {
     const user = await User.findOne({ id: req.session.passport.user });
@@ -154,7 +157,7 @@ router.get("/api/transactions/csv", checkAuthenticated, async (req, res) => {
   }
 });
 
-//fetch transaction details API
+// Route for fetching transaction details by ID
 router.get('/api/transactions/:transactionId', checkAuthenticated, async (req, res) => {
   try {
     const transactionId = req.params.transactionId;
@@ -181,7 +184,7 @@ router.get('/api/transactions/:transactionId', checkAuthenticated, async (req, r
   }
 });
 
-//Insert transaction API
+// Route for inserting transaction
 router.post('/api/insertTransaction', checkAuthenticated, async (req, res) => {
   try {
     const user = await User.findOne({ id: req.session.passport.user });
@@ -197,7 +200,7 @@ router.post('/api/insertTransaction', checkAuthenticated, async (req, res) => {
   }
 });
 
-//Transaction delete API
+// Route for deleting transaction
 router.delete('/api/deletetransaction/:transactionId', checkAuthenticated, async (req, res) => {
   try {
     const transactionId = req.params.transactionId;
@@ -209,7 +212,7 @@ router.delete('/api/deletetransaction/:transactionId', checkAuthenticated, async
   }
 });
 
-//Transaction edit API
+// Route for editing transaction
 router.put('/api/edittransactions/:transactionId', checkAuthenticated, async (req, res) => {
   try {
     const transactionId = req.params.transactionId;
@@ -240,6 +243,7 @@ router.put('/api/edittransactions/:transactionId', checkAuthenticated, async (re
   }
 });
 
+// Route for fetching today's transactions
 router.get("/transactions/today", checkAuthenticated, async (req, res) => {
   try {
     const user = await User.findOne({ id: req.session.passport.user });
@@ -253,6 +257,7 @@ router.get("/transactions/today", checkAuthenticated, async (req, res) => {
   }
 });
 
+// Route for fetching last 7 days' transactions
 router.get("/transactions/last7days", checkAuthenticated, async (req, res) => {
   try {
     const user = await User.findOne({ id: req.session.passport.user });
@@ -266,6 +271,7 @@ router.get("/transactions/last7days", checkAuthenticated, async (req, res) => {
   }
 });
 
+// Route for fetching last 30 days' transactions
 router.get("/transactions/last30days", checkAuthenticated, async (req, res) => {
   try {
     const user = await User.findOne({ id: req.session.passport.user });
@@ -279,6 +285,7 @@ router.get("/transactions/last30days", checkAuthenticated, async (req, res) => {
   }
 });
 
+// Route for fetching transactions for custom date range
 router.get("/transactions/range", checkAuthenticated, async (req, res) => {
   try {
     const user = await User.findOne({ id: req.session.passport.user });
@@ -292,6 +299,7 @@ router.get("/transactions/range", checkAuthenticated, async (req, res) => {
   }
 });
 
+// Route for rendering password reset page
 router.get("/resetPassword", async (req, res) => {
   const { token } = req.query;
   const user = await User.findOne({ 
@@ -305,18 +313,22 @@ router.get("/resetPassword", async (req, res) => {
   return res.render('resetPassword', { token, showHeader: false, title: "Reset Password" });
 });
 
+// Route for rendering login page
 router.get("/login", checkNotAuthenticated, (req, res) => {
   res.render("login", { title: "Login", showHeader: false });
 });
 
+// Route for rendering registration page
 router.get("/register", checkNotAuthenticated, (req, res) => {
   res.render("register.ejs", { title: "Register", showHeader: false});
 });
 
+// Route for rendering verification page
 router.get("/verify", (req, res) => {
   res.render("verify", { title: "Verify", showHeader: false });
 });
 
+// Route for rendering forgot password page
 router.get("/forgotPassword", (req, res) => {
   res.render("forgotPassword", { title: "Forgot Password", showHeader: false });
 });

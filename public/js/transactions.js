@@ -1,6 +1,8 @@
 $(document).ready(function () {
   $("#select-date-range").click(selectDateRange);
   $(".download-btn").click(downloadTransactionsCSV);
+
+  // Initializing DataTable with configurations
   $("#transactions-table").DataTable({
     columnDefs: [
       {
@@ -14,6 +16,7 @@ $(document).ready(function () {
 
   $(".dataTables_info").empty();
 
+  // Function to load transactions into DataTable
   function loadTransactionsIntoTable(transactions) {
     $("#transactions-table").DataTable().clear();
 
@@ -50,11 +53,13 @@ $(document).ready(function () {
       }
     });
 
+    // Updating total transactions, total income, and total expense
     $(".total-transactions h3").text(totalTransactions);
     $(".total-income h3").text("$" + totalIncome.toFixed(2));
     $(".total-expense h3").text("$" + totalExpense.toFixed(2));
   }
 
+  // Click event handlers for predefined date ranges (today for today, last-7-days for today, etc)
   $("#today").click(function () {
     $.ajax({
       url: "/transactions/today",
@@ -88,6 +93,7 @@ $(document).ready(function () {
     });
   });
 
+  // Function to handle selection of custom date range
   function selectDateRange() {
     Swal.fire({
       title: "<strong>Select Date Range</strong>",
@@ -122,6 +128,7 @@ $(document).ready(function () {
     });
   }
 
+  // Function to fetch transactions for custom date range
   function getDateRangeTransactions(startDate, endDate) {
     $.ajax({
       url: "/transactions/range",
@@ -137,6 +144,7 @@ $(document).ready(function () {
     });
   }
 
+  // Function to download transactions as CSV
   function downloadTransactionsCSV() {
     $.ajax({
       url: "/api/transactions/csv",

@@ -9,11 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
     var doughnutChartTransactionTypes = new Chart(ctxTransactionTypes, {
         type: 'doughnut',
         data: {
-            labels: ['Income', 'Expense'],
+            labels: transactionsData.length > 0 ? ['Income', 'Expense'] : ['No Data'], // Use 'No Data' label if transactionsData is empty
             datasets: [{
                 label: 'Transaction Types',
-                data: generateTypeData(transactionsData),
-                backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)']
+                data: transactionsData.length > 0 ? generateTypeData(transactionsData) : [1], // Use temporary data if transactionsData is empty
+                backgroundColor: transactionsData.length > 0 ? ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)'] : ['rgba(0, 0, 0, 0.6)'] // Use black color if transactionsData is empty
             }]
         },
         options: {
@@ -25,16 +25,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+
     // Create Chart.js instance for categories
     var ctxCategories = document.getElementById('doughnutChartCategories').getContext('2d');
     var doughnutChartCategories = new Chart(ctxCategories, {
         type: 'doughnut',
         data: {
-            labels: Object.keys(generateCategoryData(transactionsData)),
+            labels: transactionsData.length > 0 ? Object.keys(generateCategoryData(transactionsData)) : ['No Data'],
             datasets: [{
                 label: 'Categories',
-                data: Object.values(generateCategoryData(transactionsData)),
-                backgroundColor: generateRandomColors(Object.keys(generateCategoryData(transactionsData)).length)
+                data: transactionsData.length > 0 ? Object.values(generateCategoryData(transactionsData)) : [1],
+                backgroundColor: transactionsData.length > 0 ? generateRandomColors(Object.keys(generateCategoryData(transactionsData)).length) : ['rgba(0, 0, 0, 0.6)'] 
             }]
         },
         options: {

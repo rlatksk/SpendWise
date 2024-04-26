@@ -1,22 +1,22 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <div class="profile-header">
-    <div id="row">
+    <div class="profile-row">
         <h2>Username</h2> 
         <p><%=user.username%></p>
     </div>
-    <div id="row">
+    <div class="profile-row">
         <h2>Email</h2> 
         <p><%=user.email%></p>
         <button onclick="changeEmail('<%=user.username%>', '<%=user.email%>')">Change Email</button>
     </div>
-    <div id="row">
+    <div class="profile-row">
         <h2>Password</h2> 
         <p>************</p>
         <a href="/forgotPassword">
             <button>Change Password</button>
         </a>
     </div>      
-    <div id="row">
-        <button onclick="deleteAccount('<%=user._id%>', '<%=user.username%>')" style="color: red; margin-top: 80px; font-weight: bolder;">Delete Account</button>
+    <div class="profile-row">
+        <button onclick="deleteAccount('<%=user._id%>', '<%=user.username%>')" style="color: var(--white); background-color: rgb(215, 0, 0); margin: 0; width: 300px; font-size: 30px; padding: 20px; font-weight: bolder;">Delete Account</button>
     </div>              
 </div>

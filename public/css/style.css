@@ -678,13 +678,40 @@ input[type="password"] {
 
 .profile-header {
   padding: 30px;
-  border-radius: 20px 20px 0px 0px;
-  background-color: var(--white);
+  border-radius: 20px;
+  background-color: var(--black);
   color: var(--black);
   margin-bottom: 0;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  gap: 100px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  width: 40%;
+  margin: auto;
+}
+
+.profile-row {
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  width: 300px;
+  align-items: center;
+  background-color: var(--white);
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.profile-row h2 {
+  color: var(--black);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.profile-row p {
+  margin-top: 0;
+  margin-bottom: 0;
+  color: var(--black);
 }
 
 .profile-header button{
@@ -696,6 +723,9 @@ input[type="password"] {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   background-color: var(--lighter-black);
   color: white;
+  margin-top: 20px;
+  width: 200px;
+  text-align: center;
 }
 
 .swal2-container .swal2-modal .swal2-html-container > div {

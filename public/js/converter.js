@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const number = document.getElementById("number");
   const output = document.getElementById("output");
 
+  // Fetching currency data from API
   fetch("https://api.frankfurter.app/currencies")
     .then((data) => data.json())
     .then((data) => {
@@ -12,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error("Error fetching currency data:", error); // for debugging
     });
 
+  // Function to display currency options in select dropdowns
   function display(data) {
     const entries = Object.entries(data);
     for (var i = 0; i < entries.length; i++) {
@@ -20,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // Function to update converted value
   function updatevalue() {
     console.log("Updating value...");
     let currency1 = select[0].value;
@@ -31,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Currency 2:", currency2);
     console.log("Value:", value);
 
+    // Check if currencies are different before conversion
     if (currency1 !== currency2) {
       convert(currency1, currency2, value);
     } else {
@@ -38,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // Main function to convert currency
   function convert(currency1, currency2, value) {
     fetch(
       `https://api.frankfurter.app/latest?amount=${value}&from=${currency1}&to=${currency2}`
@@ -57,9 +62,11 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  // Event listeners for select dropdowns
   select.forEach((selector) => {
     selector.addEventListener("change", updatevalue);
   });
 
+  // Event listener for input number
   number.addEventListener("input", updatevalue);
 });
