@@ -7,7 +7,7 @@
       height: 100vh;
     "
   >
-    <% if (messages.error) {%>
+  <% if (messages.error) { %>
     <div
       style="
         position: absolute;
@@ -19,6 +19,34 @@
       "
     >
       <%= messages.error %>
+    </div>
+    <% } %>
+    <% if (messages.info) { %>
+    <div
+      style="
+        position: absolute;
+        top: 0;
+        width: 100%;
+        text-align: center;
+        background-color: #d1e7dd;
+        color: #0f5132;
+      "
+    >
+      <%= messages.info %>
+    </div>
+    <% } %>
+    <% if (messages.success) { %>
+    <div
+      style="
+        position: absolute;
+        top: 0;
+        width: 100%;
+        text-align: center;
+        background-color: #d4edda;
+        color: #155724;
+      "
+    >
+      <%= messages.success %>
     </div>
     <% } %>
     <div class="register__div">
