@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const realTransactionSchema = new mongoose.Schema({
+const transactionSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true
@@ -29,4 +29,4 @@ const realTransactionSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('RealTransactions', realTransactionSchema);
+module.exports = mongoose.model('Transactions', transactionSchema);

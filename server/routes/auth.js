@@ -156,7 +156,7 @@ router.post("/register", checkNotAuthenticated, async (req, res) => {
     await user.save();
 
     req.session.email = req.body.email;
-
+    req.flash("success", "Verification code sent to your email.")
     res.redirect("/verify");
   } catch (err) {
     console.log(err);
