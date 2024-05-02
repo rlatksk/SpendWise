@@ -22,7 +22,6 @@ SpendWise is a personal finance tracking application built with Node.js, Express
 4. Create a `.env` file in the root directory and add these variables
     - PORT
     - MONGO_URI
-    - MONGO_URIdummy
     - SESSION_SECRET
     - EMAIL_USERNAME
     - EMAIL_PASSWORD
