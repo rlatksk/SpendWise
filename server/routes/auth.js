@@ -273,7 +273,7 @@ router.post("/verify", async (req, res) => {
     user.verified = true;
     await user.save();
     delete req.session.email;
-    req.flash({ success: "Email verified!" });
+    req.flash( "success", "Email verified!" );
     res.redirect("/login");
   }
 });
