@@ -19,7 +19,7 @@ SpendWise is a personal finance tracking application built with Node.js, Express
 1. Clone this repository: `git clone https://github.com/rlatksk/SpendWise.git`
 2. Navigate to the project directory: `cd SpendWise`
 3. Install dependencies: `npm install`
-4. Create a `.env` file in the root directory and add these things
+4. Create a `.env` file in the root directory and add these variables
     - PORT
     - MONGO_URI
     - MONGO_URIdummy
